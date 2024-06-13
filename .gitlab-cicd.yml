@@ -19,8 +19,6 @@ build-staging:
   script:
     - docker-compose -f docker-compose.build.yml build
     - docker-compose push
-  after_script:
-    - docker logout
 
 deploy-staging:
   stage: deploy
