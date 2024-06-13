@@ -1,5 +1,3 @@
-version: '3.7'
-
 services:
   issue_board_frontend:
     image: registry.osrc.community/osrc-community/issue-board:frontend-staging

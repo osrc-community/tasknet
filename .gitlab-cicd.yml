@@ -16,7 +16,6 @@ build-staging:
   before_script:
     - mkdir ~/".docker"
     - echo $DOCKER_AUTH_CONFIG > ~/".docker/config.json"
-    - echo $DOCKER_AUTH_CONFIG
   script:
     - docker-compose -f docker-compose.build.yml build
     - docker-compose -f docker-compose.build.yml push
@@ -34,4 +33,4 @@ deploy-staging:
     - mkdir ~/".docker"
     - echo $DOCKER_AUTH_CONFIG > ~/".docker/config.json"
   script:
-    - docker-compose -p "osrc-web" -f dcd.staging.yml up -d
+    - docker-compose -p "osrcc-issue-board" -f dcd.staging.yml up -d
