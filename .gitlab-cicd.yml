@@ -19,7 +19,7 @@ build-staging:
     - echo $DOCKER_AUTH_CONFIG
   script:
     - docker-compose -f docker-compose.build.yml build
-    - docker-compose push
+    - docker-compose -f docker-compose.build.yml push
 
 deploy-staging:
   stage: deploy
