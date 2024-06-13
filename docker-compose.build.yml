@@ -1,0 +1,10 @@
+version: '3.7'
+services:
+  frontend:
+    image: registry.osrc.community/osrc-community/issue-board:frontend-${IMAGE_TAG}
+    build:
+      context: ./frontend
+  backend:
+    image: registry.osrc.community/osrc-community/issue-board:backend-${IMAGE_TAG}
+    build:
+      context: ./backend
