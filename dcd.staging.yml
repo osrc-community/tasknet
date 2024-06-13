@@ -1,14 +1,14 @@
 services:
   issue_board_frontend:
     image: registry.osrc.community/osrc-community/issue-board:frontend-staging
-    container_name: staging_osrc-issue_board-frontend
+    container_name: staging_osrc_issue_board-frontend
     restart: unless-stopped
     networks:
       - web
       - osrc
   issue_board_backend:
     image: registry.osrc.community/osrc-community/issue-board:backend-staging
-    container_name: staging_osrc-issue_board-frontend
+    container_name: staging_osrc_issue_board-frontend
     restart: unless-stopped
     networks:
       - web
