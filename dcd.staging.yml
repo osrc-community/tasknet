@@ -4,17 +4,17 @@ services:
     container_name: staging_osrc_issue_board-frontend
     restart: unless-stopped
     networks:
-      - web
+      - internal
       - osrc
   issue_board_backend:
     image: registry.osrc.community/osrc-community/issue-board:backend-staging
     container_name: staging_osrc_issue_board-backend
     restart: unless-stopped
     networks:
-      - web
+      - internal
       - osrc
 networks:
-  web:
+  internal:
     external: false
   osrc:
     external: true
