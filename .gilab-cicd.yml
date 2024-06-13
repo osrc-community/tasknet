@@ -1,0 +1,38 @@
+stages:
+  - test
+  - build
+  - deploy
+  - release
+
+build-staging:
+  stage: build
+  image: registry.osrc.community/dind/build:1.0
+  only:
+    - staging
+  tags:
+    - docker
+  variables:
+    IMAGE_TAG: staging
+  before_script:
+    - mkdir ~/".docker"
+    - echo $DOCKER_AUTH_CONFIG > ~/".docker/config.json"
+  script:
+    - docker-compose -f docker-compose.build.yml build
+    - docker-compose push
+  after_script:
+    - docker logout
+
+deploy-staging:
+  stage: deploy
+  image: registry.osrc.community/dind/build:1.0
+  only:
+    - staging
+  tags:
+    - docker
+  variables:
+    IMAGE_TAG: staging
+  before_script:
+    - mkdir ~/".docker"
+    - echo $DOCKER_AUTH_CONFIG > ~/".docker/config.json"
+  script:
+    - docker-compose -p "osrc-web" -f dcd.staging.yml up -d
