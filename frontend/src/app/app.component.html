@@ -1,9 +1,10 @@
+<component-toast></component-toast>
 <ng-container *ngIf="loginRequired && !storageService.isLoggedIn()">
   <component-login></component-login>
 </ng-container>
 <ng-container *ngIf="loginRequired && storageService.isLoggedIn()">
   <div>
-    <component-toast></component-toast>
+    <component-navigation></component-navigation>
   </div>
   <div>
     <router-outlet></router-outlet>

@@ -1,6 +1,7 @@
 import { Routes } from '@angular/router';
 import {LogoutComponent} from "@app/components/logout/logout.component";
 import {HomeComponent} from "@app/components/home/home.component";
+import {TestComponent} from "@app/components/test/test.component";
 
 export const routes: Routes = [
   {
@@ -12,7 +13,15 @@ export const routes: Routes = [
     component: LogoutComponent
   },
   {
-    path: "**",
+    path: "home",
     component: HomeComponent
+  },
+  {
+    path: "test",
+    component: TestComponent
+  },
+  {
+    path: "**",
+    redirectTo: "home"
   }
 ];

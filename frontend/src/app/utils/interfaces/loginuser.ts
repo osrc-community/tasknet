@@ -1,5 +1,7 @@
 export interface Loginuser {
   email: string,
   password?: string,
-  image?: string
+  image?: string,
+  firstname?: string,
+  lastname?: string
 }
