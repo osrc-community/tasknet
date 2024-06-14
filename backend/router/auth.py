@@ -1,8 +1,8 @@
 from fastapi import APIRouter
 from fastapi.responses import JSONResponse
 
-from backend.models.LoginUser import LoginUser
-from backend.utils.hash import hash_password
+from models.LoginUser import LoginUser
+from utils.hash import hash_password
 
 router = APIRouter(
     tags=["AUTHENTICATION"],
