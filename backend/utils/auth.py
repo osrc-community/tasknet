@@ -21,9 +21,15 @@ def gen_token(user_id: int, ttl: int) -> str | None:
     """
     timestamp = time.time()
     token: str = uuid.uuid4().__str__()
-
     db = DatabaseSqlite()
     cursor = db.get_cursor()
+
+    cursor.execute("SELECT * from auth_tokens WHERE user_id LIKE ?", (user_id,))
+    already_authenticated = cursor.fetchone()
+    if already_authenticated:
+        print(f"User '{user_id}' already authenticated!")
+        return token
+
     cursor.execute(
         "INSERT INTO auth_tokens (user_id, token, ttl, timestamp) VALUES (?, ?, ?, ?)",
         (user_id, token, ttl, timestamp)
