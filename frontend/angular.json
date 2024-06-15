@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "issue-board": {
+    "tasknet": {
       "projectType": "application",
       "schematics": {
         "@schematics/angular:component": {
@@ -17,7 +17,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:application",
           "options": {
-            "outputPath": "dist/issue-board",
+            "outputPath": "dist/tasknet",
             "index": "src/index.html",
             "browser": "src/main.ts",
             "polyfills": [
@@ -32,10 +32,7 @@
             "styles": [
               "src/styles.scss"
             ],
-            "scripts": [],
-            "server": "src/main.server.ts",
-            "prerender": true,
-            "ssr": false
+            "scripts": []
           },
           "configurations": {
             "production": {
@@ -82,13 +79,13 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "buildTarget": "issue-board:build:production"
+              "buildTarget": "tasknet:build:production"
             },
             "staging": {
-              "buildTarget": "issue-board:build:staging"
+              "buildTarget": "tasknet:build:staging"
             },
             "local": {
-              "buildTarget": "issue-board:build:local"
+              "buildTarget": "tasknet:build:local"
             }
           },
           "defaultConfiguration": "local"
@@ -96,7 +93,7 @@
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "buildTarget": "issue-board:build"
+            "buildTarget": "tasknet:build"
           }
         },
         "test": {

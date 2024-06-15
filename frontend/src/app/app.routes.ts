@@ -4,11 +4,7 @@ import {HomeComponent} from "@app/components/home/home.component";
 import {TestComponent} from "@app/components/test/test.component";
 
 export const routes: Routes = [
-  {
-    path: "logout",
-    component: LogoutComponent
-  },
-  {
+    {
     path: "logout",
     component: LogoutComponent
   },

@@ -1,4 +1,4 @@
-export interface Loginuser {
+export interface User {
   email: string,
   password?: string,
   image?: string,

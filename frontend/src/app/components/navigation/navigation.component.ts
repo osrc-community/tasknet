@@ -1,6 +1,6 @@
 import { Component, inject } from '@angular/core';
 import {StorageService} from "@utils/services/storage.service";
-import {Loginuser} from "@utils/interfaces/loginuser";
+import {User} from "@utils/interfaces/user";
 import {RouterLink, RouterLinkActive} from "@angular/router";
 import {NgTemplateOutlet} from "@angular/common";
 
@@ -17,5 +17,5 @@ import {NgTemplateOutlet} from "@angular/common";
 })
 export class NavigationComponent {
   storageService = inject(StorageService)
-  user: Loginuser = this.storageService.getUser()
+  user: User = this.storageService.getUser()
 }

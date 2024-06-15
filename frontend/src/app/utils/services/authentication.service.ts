@@ -1,5 +1,5 @@
 import {inject, Injectable} from '@angular/core';
-import {Loginuser} from "@utils/interfaces/loginuser";
+import {User} from "@utils/interfaces/user";
 import {environment} from "@env/environment";
 import { HttpClient } from '@angular/common/http';
 import {Observable} from "rxjs";
@@ -13,7 +13,7 @@ export class AuthenticationService {
   http = inject(HttpClient);
   backend = environment.backend_url;
 
-  login(user: Loginuser): Observable<any> {
+  login(user: User): Observable<any> {
     return this.http.post(
       this.backend + '/auth/login',
       {"email": user.email, "password": user.password}

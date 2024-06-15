@@ -14,4 +14,4 @@ FROM caddy:2-alpine
 
 COPY Caddyfile /etc/caddy/Caddyfile
 
-COPY --from=build /app/dist/issue-board/browser /usr/share/caddy/
+COPY --from=build /app/dist/tasknet/browser /usr/share/caddy/

@@ -1,13 +1,12 @@
 {
-  "name": "issue-board",
+  "name": "tasknet",
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
-    "test": "ng test",
-    "serve:ssr:issue-board": "node dist/issue-board/server/server.mjs"
+    "test": "ng test"
   },
   "private": true,
   "dependencies": {

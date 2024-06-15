@@ -10,7 +10,7 @@ import {
 } from "@angular/forms";
 import {NgClass, NgIf} from "@angular/common";
 import {AuthenticationService} from "@utils/services/authentication.service";
-import {Loginuser} from "@utils/interfaces/loginuser";
+import {User} from "@utils/interfaces/user";
 import {StorageService} from "@utils/services/storage.service";
 
 @Component({
@@ -55,7 +55,7 @@ export class LoginComponent implements OnInit {
       return;
     }
 
-    let user = <Loginuser>{"email": this.f['email'].value, "password": this.f['password'].value}
+    let user = <User>{"email": this.f['email'].value, "password": this.f['password'].value}
 
     this.authService.login(user).subscribe({
       next: data => {
