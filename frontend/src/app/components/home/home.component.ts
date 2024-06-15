@@ -1,5 +1,5 @@
-import {Component, inject} from '@angular/core';
-import {NgForOf, NgOptimizedImage, NgTemplateOutlet} from "@angular/common";
+import {Component, inject, PLATFORM_ID} from '@angular/core';
+import {isPlatformBrowser, NgForOf, NgOptimizedImage, NgTemplateOutlet} from "@angular/common";
 import {Router} from "@angular/router";
 
 @Component({
@@ -15,6 +15,7 @@ import {Router} from "@angular/router";
 })
 export class HomeComponent {
   router = inject(Router)
+  platformId = inject(PLATFORM_ID)
 
   panels = [
     {
@@ -50,18 +51,22 @@ export class HomeComponent {
   ]
 
   scrollLeft() {
-    let panels = document.getElementById('Panels')
-    if (panels) {
-      let distance = panels.scrollLeft - 320;
-      panels.scrollTo({ top: 0, left: distance, behavior: "smooth" });
+    if (isPlatformBrowser(this.platformId)) {
+      let panels = document.getElementById('Panels')
+      if (panels) {
+        let distance = panels.scrollLeft - 320;
+        panels.scrollTo({ top: 0, left: distance, behavior: "smooth" });
+      }
     }
   }
 
   scrollRight() {
-    let panels = document.getElementById('Panels')
-    if (panels) {
-      let distance = panels.scrollLeft + 320;
-      panels.scrollTo({ top: 0, left: distance, behavior: "smooth" });
+    if (isPlatformBrowser(this.platformId)) {
+      let panels = document.getElementById('Panels')
+      if (panels) {
+        let distance = panels.scrollLeft + 320;
+        panels.scrollTo({ top: 0, left: distance, behavior: "smooth" });
+      }
     }
   }
 }
