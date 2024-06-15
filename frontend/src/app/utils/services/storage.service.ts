@@ -1,4 +1,4 @@
-import {inject, Injectable} from '@angular/core';
+import {Injectable} from '@angular/core';
 import {User} from "@utils/interfaces/user";
 
 const USER_KEY = 'auth-user';
@@ -11,7 +11,7 @@ export class StorageService {
     localStorage.clear();
   }
 
-  public saveUser(user: any): void {
+  public saveUser(user: User): void {
     localStorage.removeItem(USER_KEY);
     localStorage.setItem(USER_KEY, JSON.stringify(user));
   }

@@ -1,36 +1,50 @@
-from fastapi import APIRouter
-from fastapi.responses import JSONResponse
+from fastapi import APIRouter, status, Depends
+from fastapi.responses import JSONResponse, Response
 
+from database import DatabaseSqlite
+from models.AuthUser import AuthUser
 from models.LoginUser import LoginUser
-from utils.hash import hash_password
+from utils.auth import hash_password, gen_token
 
 router = APIRouter(
     tags=["AUTHENTICATION"],
-    prefix="/auth",
+    prefix="/auth"
 )
-
-users = [
-    {
-        "email": "dev@dev.com",
-        "password_hash": "8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92",
-        "image": "https://avatars.githubusercontent.com/u/77273892?v=4", #Kann auch Base64 sein
-        "firstname": "Felix",
-        "lastname": "Behrendt"
-    }
-]
 
 
 @router.post("/login")
-async def login(login_user: LoginUser) -> JSONResponse:
-    #TODO Bitte eine echte Abfrage bei der Datenbank einbauen, danke! (Und eine beschreibung wäre nett)
+async def login(login_user: LoginUser, response: Response) -> JSONResponse:
     """
-    Description
+    When sent a Login-User with Email and Password it generates an auth token, saves and returns it.
+
+    Login-User:\n
+        email: str
+        password: str
+
+    Authenticated-User:\n
+        id: int
+        email: str
+        image: str
+        firstname: str
+        lastname: str
     """
-    if login_user.email == users[0]["email"]:
-        if hash_password(login_user.password) == users[0]["password_hash"]:
-            user = users[0]
-            return JSONResponse({"success": 1, "user": user})
-    return JSONResponse({"success": 0, "message": "Wrong email or password"})
+
+    db = DatabaseSqlite()
+    cursor = db.get_cursor()
+    cursor.execute("SELECT id,email,password_hash,image,firstname,lastname from users WHERE email LIKE ?", (login_user.email,))
+    result = cursor.fetchone()
+
+    id, email, password_hash, image, firstname, lastname = result
+    user = AuthUser(id=id, email=email, password_hash=password_hash, image=image, firstname=firstname, lastname=lastname)
+
+    if hash_password(login_user.password) == user.password_hash:
+        user.__delattr__("password_hash")
+        gen_token(user.id, -1)
+        response.status_code = status.HTTP_200_OK
+        return JSONResponse({"success": 1, "user": user.__dict__})
+    else:
+        response.status_code = status.HTTP_401_UNAUTHORIZED
+        return JSONResponse({"success": 0, "message": "Wrong email or password"})
 
 
 @router.post("/logout")

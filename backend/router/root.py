@@ -1,8 +1,13 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends
 from fastapi.responses import JSONResponse
 
+from utils.auth import verify_token
+
 router = APIRouter(
-    tags=["ROOT"]
+    tags=["ROOT"],
+    dependencies=[
+        Depends(verify_token),
+    ]
 )
 
 

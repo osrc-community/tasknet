@@ -62,7 +62,8 @@ export class LoginComponent implements OnInit {
         if (data.success == 0) {
           console.log("Failed to log in!") //TODO mit Toast ersetzen!
         } else {
-          this.storageService.saveUser(data['user']);
+          let rtn_user = <User>data['user']
+          this.storageService.saveUser(rtn_user);
           console.log("Login Successfully") //TODO mit Toast ersetzen!
           window.location.reload();
         }
