@@ -63,6 +63,9 @@ export class LoginComponent implements OnInit {
           console.log("Failed to log in!") //TODO mit Toast ersetzen!
         } else {
           let rtn_user = <User>data['user']
+          if (rtn_user.image == null) {
+            rtn_user.image = "assets/images/default_user.png"
+          }
           this.storageService.saveUser(rtn_user);
           console.log("Login Successfully") //TODO mit Toast ersetzen!
           window.location.reload();
