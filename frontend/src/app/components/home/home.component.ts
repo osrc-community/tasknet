@@ -1,6 +1,8 @@
 import {Component, inject, PLATFORM_ID} from '@angular/core';
 import {isPlatformBrowser, NgForOf, NgOptimizedImage, NgTemplateOutlet} from "@angular/common";
 import {Router} from "@angular/router";
+import {Panel} from "@utils/interfaces/panel";
+import {Group} from "@utils/interfaces/group";
 
 @Component({
   selector: 'component-home',
@@ -17,42 +19,111 @@ export class HomeComponent {
   router = inject(Router)
   platformId = inject(PLATFORM_ID)
 
-  panels = [
+  groups: Group[] = [
     {
-      group: "TaskNet",
-      image: "assets/images/nature/mountains.jpg",
-      panel_name: "Aufgaben",
-      url: "/bfrs71834rncs"
+      identifier: "v348hfn3r8524",
+      title: "Games",
+      panels: [
+        {
+          image: "assets/images/nature/snow.jpg",
+          title: "Dart",
+          identifier: "243bf5u3742dh8n4c"
+        },
+        {
+          image: "assets/images/nature/flowers.jpg",
+          title: "Kicker",
+          identifier: "bfrs71834rncs"
+        },
+        {
+          image: "assets/images/nature/snow.jpg",
+          title: "Dart",
+          identifier: "243bf5u3742dh8n4c"
+        },
+        {
+          image: "assets/images/nature/snow.jpg",
+          title: "Dart",
+          identifier: "243bf5u3742dh8n4c"
+        },
+        {
+          image: "assets/images/nature/snow.jpg",
+          title: "Dart",
+          identifier: "243bf5u3742dh8n4c"
+        },
+        {
+          image: "assets/images/nature/snow.jpg",
+          title: "Dart",
+          identifier: "243bf5u3742dh8n4c"
+        },
+        {
+          image: "assets/images/nature/snow.jpg",
+          title: "Dart",
+          identifier: "243bf5u3742dh8n4c"
+        },
+      ]
     },
     {
-      group: "SPH",
-      image: "assets/images/nature/aurora.jpg",
-      panel_name: "1.0",
-      url: "/bfrs71834rncs"
+      identifier: "1324r3f534rf",
+      title: "Q4",
+      panels: [
+        {
+          image: "assets/images/nature/forest_red.jpg",
+          title: "Stuff",
+          identifier: "bfrs71834rncs"
+        },
+        {
+          image: "assets/images/nature/forest_red.jpg",
+          title: "Stuff",
+          identifier: "bfrs71834rncs"
+        },
+        {
+          image: "assets/images/nature/forest_red.jpg",
+          title: "Stuff",
+          identifier: "bfrs71834rncs"
+        },
+        {
+          image: "assets/images/nature/forest_red.jpg",
+          title: "Stuff",
+          identifier: "bfrs71834rncs"
+        },
+        {
+          image: "assets/images/nature/forest_red.jpg",
+          title: "Stuff",
+          identifier: "bfrs71834rncs"
+        },
+      ]
     },
     {
-      group: "Q4",
-      image: "assets/images/nature/forest_red.jpg",
-      panel_name: "Stuff",
-      url: "/bfrs71834rncs"
+      identifier: "324357t4n8j24d",
+      title: "SPH",
+      panels: [
+        {
+          image: "assets/images/nature/aurora.jpg",
+          title: "1.0",
+          identifier: "bfrs71834rncs"
+        },
+        {
+          image: "assets/images/nature/aurora.jpg",
+          title: "1.0",
+          identifier: "bfrs71834rncs"
+        },
+      ]
     },
     {
-      group: "Games",
-      image: "assets/images/nature/flowers.jpg",
-      panel_name: "Kicker",
-      url: "/bfrs71834rncs"
-    },
-    {
-      group: "Games",
-      image: "assets/images/nature/snow.jpg",
-      panel_name: "Dart",
-      url: "/bfrs71834rncs"
-    },
+      identifier: "huwh32437erhvunc2u47r8fm",
+      title: "TaskNet",
+      panels: [
+        {
+          image: "assets/images/nature/mountains.jpg",
+          title: "Aufgaben",
+          identifier: "bfrs71834rncs"
+        }
+      ]
+    }
   ]
 
-  scrollLeft() {
+  scrollLeft(element_id: string) {
     if (isPlatformBrowser(this.platformId)) {
-      let panels = document.getElementById('Panels')
+      let panels = document.getElementById(element_id)
       if (panels) {
         let distance = panels.scrollLeft - 320;
         panels.scrollTo({ top: 0, left: distance, behavior: "smooth" });
@@ -60,9 +131,9 @@ export class HomeComponent {
     }
   }
 
-  scrollRight() {
+  scrollRight(element_id: string) {
     if (isPlatformBrowser(this.platformId)) {
-      let panels = document.getElementById('Panels')
+      let panels = document.getElementById(element_id)
       if (panels) {
         let distance = panels.scrollLeft + 320;
         panels.scrollTo({ top: 0, left: distance, behavior: "smooth" });
