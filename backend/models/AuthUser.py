@@ -10,3 +10,4 @@ class AuthUser(BaseModel):
     image: str | None
     firstname: str
     lastname: str
+    token: Optional[str] = None
