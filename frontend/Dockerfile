@@ -1,5 +1,7 @@
 FROM node:latest AS build
 
+ARG IMAGE_TAG
+
 RUN npm install -g @angular/cli
 
 WORKDIR /app
@@ -8,7 +10,7 @@ COPY . /app
 
 RUN npm i
 
-RUN ng build --configuration $IMAGE_TAG
+RUN ng build --configuration ${IMAGE_TAG}
 
 FROM caddy:2-alpine
 
