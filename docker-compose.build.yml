@@ -5,10 +5,10 @@ services:
     build:
       context: ./frontend
       args:
-        - IMAGE_TAG=${IMAGE_TAG}
+        - IMAGE_TAG=$IMAGE_TAG
   backend:
     image: registry.osrc.community/osrc-community/issue-board:backend-${IMAGE_TAG}
     build:
       context: ./backend
       args:
-        - IMAGE_TAG=${IMAGE_TAG}
+        - IMAGE_TAG=$IMAGE_TAG

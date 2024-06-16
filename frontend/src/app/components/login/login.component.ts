@@ -12,6 +12,7 @@ import {NgClass, NgIf} from "@angular/common";
 import {AuthenticationService} from "@utils/services/authentication.service";
 import {User} from "@utils/interfaces/user";
 import {StorageService} from "@utils/services/storage.service";
+import {environment} from "@env/environment";
 
 @Component({
   selector: 'component-login',
@@ -76,4 +77,6 @@ export class LoginComponent implements OnInit {
       }
     });
   }
+
+  protected readonly environment = environment;
 }
