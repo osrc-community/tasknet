@@ -17,6 +17,7 @@ build-staging:
     - mkdir ~/".docker"
     - echo $DOCKER_AUTH_CONFIG > ~/".docker/config.json"
   script:
+    - echo $IMAGE_TAG
     - docker-compose -f docker-compose.build.yml build
     - docker-compose -f docker-compose.build.yml push
 
