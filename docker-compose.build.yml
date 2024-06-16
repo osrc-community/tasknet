@@ -4,7 +4,11 @@ services:
     image: registry.osrc.community/osrc-community/issue-board:frontend-${IMAGE_TAG}
     build:
       context: ./frontend
+      args:
+        - IMAGE_TAG=${IMAGE_TAG}
   backend:
     image: registry.osrc.community/osrc-community/issue-board:backend-${IMAGE_TAG}
     build:
       context: ./backend
+      args:
+        - IMAGE_TAG=${IMAGE_TAG}
