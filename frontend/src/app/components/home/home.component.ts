@@ -42,7 +42,7 @@ export class HomeComponent {
         {
           image: "assets/images/nature/snow.jpg",
           title: "Dart",
-          identifier: "243bf5u3742dh8n4c"
+          identifier: "734f2gh413jf8"
         },
         {
           image: "assets/images/nature/snow.jpg",

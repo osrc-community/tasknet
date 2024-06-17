@@ -3,6 +3,7 @@ import {LogoutComponent} from "@app/components/logout/logout.component";
 import {HomeComponent} from "@app/components/home/home.component";
 import {TestComponent} from "@app/components/test/test.component";
 import {PanelComponent} from "@app/components/panel/panel.component";
+import { SignUpComponent } from './components/sign-up/sign-up.component';
 
 export const routes: Routes = [
   {
@@ -20,6 +21,10 @@ export const routes: Routes = [
   {
     path: "panels/:identifier",
     component: PanelComponent
+  },
+  {
+    path: "signup",
+    component: SignUpComponent
   },
   {
     path: "**",

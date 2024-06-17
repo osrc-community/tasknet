@@ -1,4 +1,5 @@
 <component-toast></component-toast>
+<span>{{ currentRoute }}</span>
 <ng-container *ngIf="loginRequired && !storageService.isLoggedIn()">
   <component-login></component-login>
 </ng-container>
