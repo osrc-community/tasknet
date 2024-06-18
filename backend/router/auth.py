@@ -42,13 +42,13 @@ async def login(login_user: LoginUser, response: Response) -> JSONResponse:
         token = gen_token(user.id, -1)
         if token is None:
             response.status_code = status.HTTP_401_UNAUTHORIZED
-            return JSONResponse({"success": 0, "message": "Wrong email or password"})
+            return JSONResponse({"success": 0, "message": "Falsche Email oder Passwort"})
         user.token = token
         response.status_code = status.HTTP_200_OK
         return JSONResponse({"success": 1, "user": user.__dict__})
     else:
         response.status_code = status.HTTP_401_UNAUTHORIZED
-        return JSONResponse({"success": 0, "message": "Wrong email or password"})
+        return JSONResponse({"success": 0, "message": "Falsche Email oder Passwort"})
 
 
 @router.post("/logout")
