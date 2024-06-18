@@ -52,5 +52,15 @@ async def login(login_user: LoginUser, response: Response) -> JSONResponse:
 
 
 @router.post("/logout")
-async def logout():
-    return
+async def logout(user: AuthUser, response: Response) -> JSONResponse:
+    db = DatabaseSqlite()
+    cursor = db.get_cursor()
+    cursor.execute("DELETE FROM auth_tokens WHERE user_id LIKE ?", (user.email,))
+    result = cursor.fetchone()
+
+    db.conn.commit()
+    if cursor.rowcount > 0:
+        return JSONResponse({"success": 1, "message": "Erfolgreich Abgemeldet."})
+    cursor.close()
+
+    return JSONResponse({"success": 0, "message": "Fehler während der Abmeldung."})
