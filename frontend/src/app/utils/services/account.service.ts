@@ -17,8 +17,6 @@ export class AccountService {
       this.backend + '/account/create',
       {"firstName": user.firstname, "lastName": user.lastname,"email": user.email, "password": user.password}
     );
-    //TODO funktion integrieren
-
   }
 
   updateAccount(user: User): Observable<any> {

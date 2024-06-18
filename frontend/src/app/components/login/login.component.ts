@@ -15,6 +15,7 @@ import {StorageService} from "@utils/services/storage.service";
 import {environment} from "@env/environment";
 import {ToastService} from "@utils/services/toast.service";
 import {Toast, ToastWithoutID} from "@utils/interfaces/toast";
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'component-login',
@@ -33,6 +34,7 @@ export class LoginComponent implements OnInit {
   private authService = inject(AuthenticationService);
   private storageService = inject(StorageService)
   private toastService = inject(ToastService)
+  protected router = inject(Router)
 
   form: FormGroup = new FormGroup({
     email: new FormControl(''),

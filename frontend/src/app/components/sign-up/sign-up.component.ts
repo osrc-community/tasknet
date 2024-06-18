@@ -12,6 +12,7 @@ import { AuthenticationService } from '@app/utils/services/authentication.servic
 import { StorageService } from '@app/utils/services/storage.service';
 import {AccountService} from "@utils/services/account.service";
 import {User} from "@utils/interfaces/user";
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'component-sign-up',
@@ -26,6 +27,7 @@ import {User} from "@utils/interfaces/user";
 export class SignUpComponent implements OnInit {
   private formBuilder: FormBuilder = inject(FormBuilder);
   private accountService = inject(AccountService)
+  protected router = inject(Router);
 
   form: FormGroup = new FormGroup({
     firstName: new FormControl(''),
