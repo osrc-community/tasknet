@@ -57,6 +57,12 @@ export class SignUpComponent implements OnInit {
   }
 
   createAccount() {
+    this.submitted = !this.submitted;
+      if (this.form.invalid) {
+        return;
+      }
+
+
     if (this.form.valid) {
       let user = <User>{
         firstname:this.f['firstname'].value,
@@ -88,11 +94,16 @@ export class SignUpComponent implements OnInit {
               }
             });
           } else {
+
             this.toastService.notify({type: 'danger', text: 'Fehler während des Account Erstellens: ' + data.message, bor: 10000})
           }
         },
         error: err => {
-          this.toastService.notify({type: 'danger', text: 'Fehler während des Account Erstellens: ' + err, bor: 10000})
+          if (err.status == 409) {
+            this.toastService.notify({type: 'danger', text: "Es existiert bereits ein Account mit dieser E-Mail Adresse!", bor: 10000})
+          } else {
+            this.toastService.notify({type: 'danger', text: 'Fehler während des Account Erstellens: ' + err, bor: 10000})
+          }
         }
       });
     } else {
