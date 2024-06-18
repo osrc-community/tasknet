@@ -48,4 +48,11 @@ export class SignUpComponent implements OnInit {
   get f(): { [key: string]: AbstractControl } {
     return this.form.controls;
   }
+
+  createAccount() {
+
+    
+
+  }
 }
+

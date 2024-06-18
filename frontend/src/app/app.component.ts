@@ -20,8 +20,6 @@ import { Router } from 'express';
 export class AppComponent implements OnInit {
   storageService: StorageService = inject(StorageService);
   protected authService = inject(AuthenticationService);
-  route: ActivatedRoute = inject(ActivatedRoute)
-  currentRoute = this.route.snapshot.url
   loginRequired = environment.loginRequired;
   title = 'TaskNet';
 
