@@ -3,7 +3,8 @@ import {
   AbstractControl,
   FormBuilder,
   FormControl,
-  FormGroup, ReactiveFormsModule,
+  FormGroup,
+  ReactiveFormsModule,
   Validators
 } from "@angular/forms";
 import {NgClass, NgIf} from "@angular/common";
