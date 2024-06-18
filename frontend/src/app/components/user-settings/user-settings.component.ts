@@ -12,6 +12,7 @@ import {
   Validators
 } from "@angular/forms";
 import {ActivatedRoute, Router} from "@angular/router";
+import {AccountService} from "@utils/services/account.service";
 
 @Component({
   selector: 'component-user-settings',
@@ -26,10 +27,12 @@ import {ActivatedRoute, Router} from "@angular/router";
   styleUrl: './user-settings.component.scss'
 })
 export class UserSettingsComponent implements OnInit {
-  private formBuilder: FormBuilder = inject(FormBuilder);
-  storageService: StorageService = inject(StorageService)
+  private formBuilder = inject(FormBuilder);
+  storageService = inject(StorageService)
   activatedRoute = inject(ActivatedRoute);
-  router: Router = inject(Router);
+  router = inject(Router);
+  accountService = inject(AccountService);
+
   page = this.activatedRoute.snapshot.params['page'];
   pages = ["general", "security"]
   user: User = this.storageService.getUser();
@@ -41,6 +44,9 @@ export class UserSettingsComponent implements OnInit {
     email: new FormControl(),
   });
   submitted: boolean = false;
+
+  image: string | ArrayBuffer | null = "";
+  image_event: any;
 
   ngOnInit(): void {
     this.user = this.storageService.getUser()
@@ -61,12 +67,37 @@ export class UserSettingsComponent implements OnInit {
     return this.form.controls;
   }
 
-  uploadImage() {
-    this.toggleUploadImageModal()
-  }
-
   toggleUploadImageModal() {
     this.showModal = !this.showModal
+  }
+
+  processImage() {
+    let new_user: User = <User>{image: ''}
+    this.accountService.updateAccount(new_user).subscribe({
+      next: data => {
+        if (data.success == 0) {
+          console.log("Failed to log in!") //TODO mit Toast ersetzen!
+        } else {
+          console.log("Hat jeklappt") //TODO mit Toast ersetzen!
+        }
+      },
+      error: err => {
+        console.log("Failed to log in!") //TODO mit Toast ersetzen!
+      }
+    });
+  }
+
+  readUrl(event:any) {
+    this.image_event = event;
+    if (event.target.files && event.target.files[0]) {
+      var reader = new FileReader();
+
+      reader.onload = (event: ProgressEvent) => {
+        this.image = (<FileReader>event.target).result;
+      }
+
+      reader.readAsDataURL(event.target.files[0]);
+    }
   }
 
   deleteImage() {

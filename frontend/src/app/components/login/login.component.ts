@@ -13,6 +13,8 @@ import {AuthenticationService} from "@utils/services/authentication.service";
 import {User} from "@utils/interfaces/user";
 import {StorageService} from "@utils/services/storage.service";
 import {environment} from "@env/environment";
+import {ToastService} from "@utils/services/toast.service";
+import {Toast, ToastWithoutID} from "@utils/interfaces/toast";
 
 @Component({
   selector: 'component-login',
@@ -30,6 +32,7 @@ export class LoginComponent implements OnInit {
   private formBuilder: FormBuilder = inject(FormBuilder);
   private authService = inject(AuthenticationService);
   private storageService = inject(StorageService)
+  private toastService = inject(ToastService)
 
   form: FormGroup = new FormGroup({
     email: new FormControl(''),
@@ -61,19 +64,18 @@ export class LoginComponent implements OnInit {
     this.authService.login(user).subscribe({
       next: data => {
         if (data.success == 0) {
-          console.log("Failed to log in!") //TODO mit Toast ersetzen!
+          this.toastService.notify({type: 'danger', text: 'Anmeldung Fehlgeschlagen!', bor: 3000})
         } else {
           let rtn_user = <User>data['user']
           if (rtn_user.image == null) {
             rtn_user.image = "assets/images/default_user.png"
           }
           this.storageService.saveUser(rtn_user);
-          console.log("Login Successfully") //TODO mit Toast ersetzen!
           window.location.reload();
         }
       },
       error: err => {
-        console.log("Failed to log in!") //TODO mit Toast ersetzen!
+        this.toastService.notify({type: 'danger', text: 'Anmeldung Fehlgeschlagen!', bor: 3000})
       }
     });
   }

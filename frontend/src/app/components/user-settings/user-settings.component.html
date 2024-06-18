@@ -1,32 +1,33 @@
-
-<div *ngIf="showModal" class="overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none justify-center items-center flex">
-  <div class="relative w-auto my-6 mx-auto max-w-6xl">
-    <!--content-->
-    <div class="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-gray-500 outline-none focus:outline-none">
-      <!--header-->
-      <div class="flex items-start justify-between p-5 border-b border-solid border-blueGray-200 rounded-t align-middle">
-        <h3 class="text-3xl font-semibold text-white">
-          Benutzerbild Hochladen
-        </h3>
-      </div>
-      <!--body-->
-      <div class="relative p-6 flex-auto">
-        <input class="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400" aria-describedby="file_input_help" id="file_input" type="file">
-        <p class="mt-1 text-sm text-gray-500 dark:text-gray-300" id="file_input_help">SVG, PNG, JPG or GIF (MAX. 800x400px).</p>
-      </div>
-      <!--footer-->
-      <div class="flex items-center justify-center p-6 border-t border-solid border-blueGray-200 rounded-b">
-        <button class="text-red-500 background-transparent font-bold uppercase px-6 py-2 text-sm outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150" type="button" (click)="toggleUploadImageModal()">
-          Abbrechen
-        </button>
-        <button class="bg-emerald-500 text-white active:bg-emerald-600 font-bold uppercase text-sm px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150" type="button" (click)="toggleUploadImageModal()">
-          Speichern
-        </button>
+<ng-container *ngIf="showModal">
+  <div class="overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none justify-center items-center flex">
+    <div class="relative w-auto my-6 mx-auto max-w-6xl">
+      <!--content-->
+      <div class="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-gray-500 outline-none focus:outline-none">
+        <!--header-->
+        <div class="flex items-start justify-between p-5 border-b border-solid border-blueGray-200 rounded-t align-middle">
+          <h3 class="text-3xl font-semibold text-white">
+            Benutzerbild Hochladen
+          </h3>
+        </div>
+        <!--body-->
+        <div class="relative p-6 flex-auto">
+          <input (change)="readUrl($event)" class="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400" aria-describedby="file_input_help" id="file_input" type="file">
+          <p class="mt-1 text-sm text-gray-500 dark:text-gray-300" id="file_input_help">SVG, PNG, JPG or GIF (MAX. 800x400px).</p>
+        </div>
+        <!--footer-->
+        <div class="flex items-center justify-center p-6 border-t border-solid border-blueGray-200 rounded-b">
+          <button class="text-red-500 background-transparent font-bold uppercase px-6 py-2 text-sm outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150" type="button" (click)="toggleUploadImageModal()">
+            Abbrechen
+          </button>
+          <button class="bg-emerald-500 text-white active:bg-emerald-600 font-bold uppercase text-sm px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150" type="button" (click)="processImage()">
+            Speichern
+          </button>
+        </div>
       </div>
     </div>
   </div>
-</div>
-<div *ngIf="showModal" class="opacity-25 fixed inset-0 z-40 bg-black"></div>
+  <div class="opacity-25 fixed inset-0 z-40 bg-black"></div>
+</ng-container>
 
 <div class="max-w-screen-xl flex flex-wrap items-center content-center justify-center mx-auto p-20">
   <div class="mt-18 w-screen">
@@ -46,7 +47,7 @@
               <div class="content-center grid grid-cols-2">
                 <div class="justify-center grid">
                   <div class="content-center">
-                    <div class="justify-center grid cursor-pointer" (click)="uploadImage()">
+                    <div class="justify-center grid cursor-pointer" (click)="toggleUploadImageModal()">
                       <img ngSrc="{{ user.image }}" class="rounded-full z-0" alt="User Image" width="96" height="96" priority>
                       <div class="bg-slate-500 text-white rounded-full -mt-7 w-fit ms-16 z-10 relative">
                         <div class="p-2">
@@ -93,6 +94,9 @@
             </div>
           </div>
         </div>
+      </ng-container>
+      <ng-container *ngIf="page == 'security'">
+        <div>Security</div>
       </ng-container>
     </div>
   </div>

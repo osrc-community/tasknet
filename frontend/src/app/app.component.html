@@ -1,4 +1,6 @@
-<component-toast></component-toast>
+<div class="grid me-1">
+  <component-toast class="absolute justify-self-end z-30"></component-toast>
+</div>
 <ng-container *ngIf="loginRequired && !storageService.isLoggedIn()">
   <component-login></component-login>
 </ng-container>

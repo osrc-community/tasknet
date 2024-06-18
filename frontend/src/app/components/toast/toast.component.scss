@@ -1,0 +1,13 @@
+.notification {
+  opacity: 1;
+  animation: RightToLeft 0.75s ease-in alternate;
+}
+
+@keyframes RightToLeft {
+  0%   {
+    transform: translateX(100%);
+  }
+  100% {
+    transform: translateX(0%);
+  }
+}
