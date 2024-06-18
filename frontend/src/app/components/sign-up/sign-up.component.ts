@@ -10,6 +10,8 @@ import {
 import {NgClass, NgIf} from "@angular/common";
 import { AuthenticationService } from '@app/utils/services/authentication.service';
 import { StorageService } from '@app/utils/services/storage.service';
+import {AccountService} from "@utils/services/account.service";
+import {User} from "@utils/interfaces/user";
 
 @Component({
   selector: 'component-sign-up',
@@ -23,8 +25,7 @@ import { StorageService } from '@app/utils/services/storage.service';
 })
 export class SignUpComponent implements OnInit {
   private formBuilder: FormBuilder = inject(FormBuilder);
-  private authService = inject(AuthenticationService);
-  private storageService = inject(StorageService)
+  private accountService = inject(AccountService)
 
   form: FormGroup = new FormGroup({
     firstName: new FormControl(''),
@@ -50,9 +51,8 @@ export class SignUpComponent implements OnInit {
   }
 
   createAccount() {
-
-    
-
+    let user = <User>{firstname:this.f['firstName'].value, lastname:this.f['lastName'].value, email:this.f['email'].value, password:this.f['password'].value,}
+  this.accountService.createAccount(user)
   }
 }
 
