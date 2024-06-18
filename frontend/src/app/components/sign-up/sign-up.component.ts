@@ -3,7 +3,7 @@ import {
   AbstractControl,
   FormBuilder,
   FormControl,
-  FormGroup,
+  FormGroup, ReactiveFormsModule,
   Validators
 } from "@angular/forms";
 import {NgClass, NgIf} from "@angular/common";
@@ -13,7 +13,10 @@ import { StorageService } from '@app/utils/services/storage.service';
 @Component({
   selector: 'component-sign-up',
   standalone: true,
-  imports: [],
+  imports: [
+    ReactiveFormsModule,
+    NgIf
+  ],
   templateUrl: './sign-up.component.html',
   styleUrl: './sign-up.component.scss'
 })
