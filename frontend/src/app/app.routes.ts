@@ -24,7 +24,7 @@ export const routes: Routes = [
     component: PanelComponent
   },
   {
-    path: "user-settings",
+    path: "user-settings/:page",
     component: UserSettingsComponent
   },
   {
