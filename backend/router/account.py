@@ -2,10 +2,11 @@ from fastapi import APIRouter, status, Depends
 from fastapi.responses import JSONResponse, Response
 
 from database import DatabaseSqlite
+from models.AuthUser import AuthUser
 from models.UpdateUser import UpdateUser
 from models.CreateUser import CreateUser
 from utils.account import user_exists
-from utils.auth import hash_password
+from utils.auth import hash_password, gen_token
 
 router = APIRouter(
     tags=["ACCOUNT"],
@@ -42,7 +43,10 @@ async def create(user: CreateUser, response: Response) -> JSONResponse:
 
     db.conn.commit()
     if cursor.rowcount > 0:
-        return JSONResponse({"success": 1, "message": "Benutzer Erstellt. Willkommen."})
+        user_id = cursor.lastrowid
+        token = gen_token(user_id, 10000)
+        user = AuthUser(id=user_id, email=user.email, image=None, firstname=user.firstname, lastname=user.lastname, token=token)
+        return JSONResponse({"success": 1, "message": "Benutzer Erstellt. Willkommen.", "user": user.__dict__})
     cursor.close()
 
     return JSONResponse({"success": 0, "message": "Fehler während des Erstellens. Bitte probieren Sie es später erneut."})

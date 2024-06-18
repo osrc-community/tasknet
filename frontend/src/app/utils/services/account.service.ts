@@ -15,7 +15,12 @@ export class AccountService {
   createAccount(user: User): Observable<any> {
     return this.http.post(
       this.backend + '/account/create',
-      {"firstName": user.firstname, "lastName": user.lastname,"email": user.email, "password": user.password}
+      {
+        "email": user.email,
+        "password": user.password,
+        "firstname": user.firstname,
+        "lastname": user.lastname
+      }
     );
   }
 

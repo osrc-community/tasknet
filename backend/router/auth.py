@@ -51,11 +51,11 @@ async def login(login_user: LoginUser, response: Response) -> JSONResponse:
         return JSONResponse({"success": 0, "message": "Falsche Email oder Passwort"})
 
 
-@router.post("/logout")
-async def logout(user: AuthUser, response: Response) -> JSONResponse:
+@router.post("/logout/{user_id}")
+async def logout(user_id: int, response: Response) -> JSONResponse:
     db = DatabaseSqlite()
     cursor = db.get_cursor()
-    cursor.execute("DELETE FROM auth_tokens WHERE user_id LIKE ?", (user.email,))
+    cursor.execute("DELETE FROM auth_tokens WHERE user_id LIKE ?", (user_id,))
     result = cursor.fetchone()
 
     db.conn.commit()

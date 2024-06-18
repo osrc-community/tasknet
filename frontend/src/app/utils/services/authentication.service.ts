@@ -20,7 +20,7 @@ export class AuthenticationService {
     );
   }
 
-  logout(): Observable<any> {
-    return this.http.post(this.backend + '/auth/logout', {});
+  logout(user_id: number): Observable<any> {
+    return this.http.post(this.backend + '/auth/logout/' + user_id, {});
   }
 }
