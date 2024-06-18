@@ -1,10 +1,13 @@
 <div class="grid me-1">
   <component-toast class="absolute justify-self-end z-30"></component-toast>
 </div>
-<ng-container *ngIf="loginRequired && !storageService.isLoggedIn()">
+<ng-container *ngIf="router.url == '/signup'">
+  <component-sign-up></component-sign-up>
+</ng-container>
+<ng-container *ngIf="loginRequired && !storageService.isLoggedIn() && router.url != '/signup'">
   <component-login></component-login>
 </ng-container>
-<ng-container *ngIf="loginRequired && storageService.isLoggedIn()">
+<ng-container *ngIf="loginRequired && storageService.isLoggedIn() && router.url != '/signup'">
   <div class="sticky top-0 z-20">
     <component-navigation></component-navigation>
   </div>
