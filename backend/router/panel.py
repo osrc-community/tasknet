@@ -3,6 +3,7 @@ from fastapi.responses import JSONResponse
 
 from database import DatabaseSqlite
 from models.Group import Group
+from models.Panel import Panel
 from utils.auth import verify_token
 
 router = APIRouter(
@@ -48,18 +49,24 @@ def get_groups_panels():
     cursor.execute(sql)
     groups = cursor.fetchall()
 
-    returnList: list = []
+    return_list: list = []
 
     for group in groups:
         identifier, title = group
         sql_panels = """
-        SELECT * 
+        SELECT panels.identifier, panels.title, panels.image
         FROM group_panel 
         JOIN panels ON group_panel.panel_identifier = panels.identifier
         WHERE group_identifier = ?
         """
+        panels_raw = cursor.execute(sql_panels, (identifier,)).fetchall()
+        panels_parsed = []
+        for panel in panels_raw:
+            p_identifier, p_title, p_image = panel
+            if p_image is None:
+                p_image = "assets/images/example.png"
+            panels_parsed.append(Panel(identifier=p_identifier, title=p_title, image=p_image).__dict__)
 
-        #group_title, panel_identifier, panel_title, panel_image = r
-        #returnList.append({"group_title": group_title, "panel_identifier": panel_identifier, "panel_title": panel_title, "panel_image": panel_image})
+        return_list.append({"identifier": identifier, "title": title, "panels": panels_parsed})
 
-    return JSONResponse({"success": 1, "groups": returnList})
+    return JSONResponse({"success": 1, "groups": return_list})
