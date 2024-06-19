@@ -34,7 +34,7 @@ export class UserSettingsComponent implements OnInit {
   accountService = inject(AccountService);
 
   page = this.activatedRoute.snapshot.params['page'];
-  pages = ["general", "security"]
+  pages = ["general", "security", "groups",]
   user: User = this.storageService.getUser();
   showModal = false;
 
@@ -113,5 +113,12 @@ export class UserSettingsComponent implements OnInit {
   }
   deleteAccount() {
 
+    //Todo Delete Funktion vom Backend einfügen
+  }
+  updatePassword(){
+    //Todo Update Funktion vom Backend einfügen
+  }
+  groupname() {
+    //Todo Gruppen mit dem geählten Namen erstelen aus dem Backend einfügen
   }
 }

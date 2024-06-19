@@ -39,6 +39,9 @@
         <div class="font-medium flex flex-col p-2 md:flex-row md:space-x-8" [class.border-b-2]="page == 'security'">
           <a href="/user-settings/security" class="block py-2 px-3 text-white">Login & Sicherheit</a>
         </div>
+        <div class="font-medium flex flex-col p-2 md:flex-row md:space-x-8" [class.border-b-2]="page == 'groups'">
+          <a href="/user-settings/groups" class="block py-2 px-3 text-white">Gruppen</a>
+        </div>
       </div>
       <ng-container *ngIf="page == 'general'">
         <div class="p-10">
@@ -102,7 +105,7 @@
             <p style="color: white">Hier haben sie die Möglichkeit ihr Passwort zu ändern.<br>
             Dafür benötigen Sie nur das alte Passwort und ihr neues.<br><br></p>
             <label for="password" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Altes Passwort</label>
-              <input type="password" id="password"
+              <input type="password" id="oldpassword"
                      class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                      style="width: 300px;"
                      required />
@@ -127,7 +130,7 @@
 
         <div class="mb-6">
           <label for="password" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Passwort bestätigen</label>
-            <input type="password" id="password"
+            <input type="password" id="newpassword"
                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                    style="width: 300px;"
                    required />
@@ -138,7 +141,7 @@
             </ng-container>
         </div>
         <div class="pb-10">
-          <button type="submit" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Passwort Aktualisieren</button>
+          <button (click)="updatePassword" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Passwort Aktualisieren</button>
         </div>
             </div>
               <div>
@@ -151,6 +154,23 @@
                   </div>
                 </div>
       </form>
+      </ng-container>
+      <ng-container *ngIf="page == 'groups'">
+        <div  class="space-y-3 md:space-y-6 grid-cols-2">
+          <p style="color: white;">
+            Hier können Sie leute zu Ihren Task einladen um mit Ihnen gemeinsam Projekte zu Koodinieren.<br>
+            Dies kann eure Gruppenarbeit oder Gruppen Projekte deutlich vereinfachen.<br>
+            <br><br></p>
+          <div>
+            <label for="groupname" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Gruppenname</label>
+            <input type="text" id="groupname"
+                   class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                   style="width: 300px;"
+                   required />
+            <p><br><br></p>
+            <button (click)="groupname" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Gruppe erstellen</button>
+          </div>
+        </div>
       </ng-container>
     </div>
   </div>
