@@ -16,18 +16,18 @@
         </div>
       </div>
       <div class="grid-flow-col flex pl-2 pr-2 pb-3">
-        <div class="p-3 pt-5 flex overflow-x-auto w-1/7">
+        <div class="p-3 pt-5 flex overflow-x-auto w-1/7" cdkDropListGroup>
           <ng-container *ngFor="let list of lists">
-            <div class="bg-gray-600 rounded-md me-3 h-fit" style="width: 280px;">
+            <div class="bg-gray-600 rounded-md me-3 h-fit min-w-64" style="width: 280px;">
               <div class="">
                 <div class="p-2">
                   <h2 class="ps-2 pt-2 text-white text-start text-2xl">
                     {{ list.title }}
                   </h2>
                 </div>
-                <div class="overflow-y-auto max-h-[27rem]">
+                <div class="overflow-y-auto max-h-[27rem]" cdkDropList [cdkDropListData]="list.entries" (cdkDropListDropped)="drop($event)">
                   <ng-container *ngFor="let item of list.entries; let last=last">
-                    <div class="p-2 pt-1 pb-0 cursor-move tracking-wide">
+                    <div class="p-2 pt-1 pb-0 cursor-move tracking-wide" cdkDrag>
                       <div class="bg-gray-700 rounded-md">
                         <h2 class="p-2 ps-3 pe-3 pb-3 text-white text-start text-2xl break-words select-none">
                           {{ item.message }}
