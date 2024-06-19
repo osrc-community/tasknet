@@ -1,6 +1,6 @@
 import {Component, inject, OnInit} from '@angular/core';
 import { CommonModule } from '@angular/common';
-import {Router, RouterOutlet} from '@angular/router';
+import {ActivatedRoute, Router, RouterOutlet} from '@angular/router';
 import {initFlowbite} from "flowbite";
 import {StorageService} from "@utils/services/storage.service";
 import {AuthenticationService} from "@utils/services/authentication.service";
@@ -19,10 +19,10 @@ import {SignUpComponent} from "@app/components/sign-up/sign-up.component";
 })
 export class AppComponent implements OnInit {
   storageService: StorageService = inject(StorageService);
-  protected authService = inject(AuthenticationService);
+  protected router = inject(Router);
+
   loginRequired = environment.loginRequired;
   title = 'TaskNet';
-  protected router = inject(Router);
 
   ngOnInit(): void {
     initFlowbite();

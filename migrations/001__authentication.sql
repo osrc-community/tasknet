@@ -13,4 +13,5 @@ CREATE TABLE 'auth_tokens' (
     ttl integer,
     timestamp double,
     FOREIGN KEY(user_id) REFERENCES users(id)
+        ON DELETE CASCADE
 );

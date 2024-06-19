@@ -1,8 +1,9 @@
-import { Component, inject } from '@angular/core';
+import {Component, inject, Input, OnInit} from '@angular/core';
 import {StorageService} from "@utils/services/storage.service";
 import {User} from "@utils/interfaces/user";
-import {RouterLink, RouterLinkActive} from "@angular/router";
-import {NgTemplateOutlet} from "@angular/common";
+import {ActivatedRoute, Params, Router, RouterLink, RouterLinkActive} from "@angular/router";
+import {NgIf, NgTemplateOutlet} from "@angular/common";
+import {environment} from "@env/environment";
 
 @Component({
   selector: 'component-navigation',
@@ -10,12 +11,19 @@ import {NgTemplateOutlet} from "@angular/common";
   imports: [
     RouterLink,
     RouterLinkActive,
-    NgTemplateOutlet
+    NgTemplateOutlet,
+    NgIf
   ],
   templateUrl: './navigation.component.html',
   styleUrl: './navigation.component.scss'
 })
-export class NavigationComponent {
+export class NavigationComponent implements OnInit {
   storageService = inject(StorageService)
+  router = inject(Router)
+  activatedRoute = inject(ActivatedRoute);
+
   user: User = this.storageService.getUser()
+
+  ngOnInit() {
+  }
 }
