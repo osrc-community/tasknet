@@ -4,8 +4,8 @@ CREATE TABLE 'groups' (
 );
 
 CREATE TABLE 'group_panel' (
-    group_identifier text PRIMARY KEY,
-    panel_identifier text,
+    group_identifier text,
+    panel_identifier text PRIMARY KEY,
     FOREIGN KEY(group_identifier) REFERENCES groups(identifier)
         ON DELETE CASCADE,
     FOREIGN KEY(panel_identifier) REFERENCES panels(identifier)

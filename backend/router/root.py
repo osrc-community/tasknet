@@ -5,9 +5,6 @@ from utils.auth import verify_token
 
 router = APIRouter(
     tags=["ROOT"],
-    dependencies=[
-        Depends(verify_token),
-    ]
 )
 
 

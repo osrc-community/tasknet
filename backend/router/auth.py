@@ -39,7 +39,7 @@ async def login(login_user: LoginUser, response: Response) -> JSONResponse:
 
     if hash_password(login_user.password) == user.password_hash:
         user.__delattr__("password_hash")
-        token = gen_token(user.id, -1)
+        token = gen_token(user.id, 3600)
         if token is None:
             response.status_code = status.HTTP_401_UNAUTHORIZED
             return JSONResponse({"success": 0, "message": "Falsche Email oder Passwort"})

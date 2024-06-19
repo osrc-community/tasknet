@@ -1,8 +1,12 @@
-import {Component, inject, PLATFORM_ID} from '@angular/core';
+import {Component, inject, OnInit, PLATFORM_ID} from '@angular/core';
 import {isPlatformBrowser, NgForOf, NgOptimizedImage, NgTemplateOutlet} from "@angular/common";
 import {Router} from "@angular/router";
-import {Panel} from "@utils/interfaces/panel";
 import {Group} from "@utils/interfaces/group";
+import {Document, document} from "postcss";
+import {DIR_DOCUMENT} from "@angular/cdk/bidi";
+import {DataService} from "@utils/services/data.service";
+import {User} from "@utils/interfaces/user";
+import {ToastService} from "@utils/services/toast.service";
 
 @Component({
   selector: 'component-home',
@@ -15,115 +19,17 @@ import {Group} from "@utils/interfaces/group";
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss'
 })
-export class HomeComponent {
+export class HomeComponent implements OnInit {
   router = inject(Router)
+  dataService = inject(DataService)
+  toastService = inject(ToastService)
   platformId = inject(PLATFORM_ID)
 
-  groups: Group[] = [
-    {
-      identifier: "v348hfn3r8524",
-      title: "Games",
-      panels: [
-        {
-          image: "assets/images/nature/snow.jpg",
-          title: "Dart",
-          identifier: "243bf5u3742dh8n4c"
-        },
-        {
-          image: "assets/images/nature/flowers.jpg",
-          title: "Kicker",
-          identifier: "bfrs71834rncs"
-        },
-        {
-          image: "assets/images/nature/snow.jpg",
-          title: "Dart",
-          identifier: "243bf5u3742dh8n4c"
-        },
-        {
-          image: "assets/images/nature/snow.jpg",
-          title: "Dart",
-          identifier: "734f2gh413jf8"
-        },
-        {
-          image: "assets/images/nature/snow.jpg",
-          title: "Dart",
-          identifier: "243bf5u3742dh8n4c"
-        },
-        {
-          image: "assets/images/nature/snow.jpg",
-          title: "Dart",
-          identifier: "243bf5u3742dh8n4c"
-        },
-        {
-          image: "assets/images/nature/snow.jpg",
-          title: "Dart",
-          identifier: "243bf5u3742dh8n4c"
-        },
-      ]
-    },
-    {
-      identifier: "1324r3f534rf",
-      title: "Q4",
-      panels: [
-        {
-          image: "assets/images/nature/forest_red.jpg",
-          title: "Stuff",
-          identifier: "bfrs71834rncs"
-        },
-        {
-          image: "assets/images/nature/forest_red.jpg",
-          title: "Stuff",
-          identifier: "bfrs71834rncs"
-        },
-        {
-          image: "assets/images/nature/forest_red.jpg",
-          title: "Stuff",
-          identifier: "bfrs71834rncs"
-        },
-        {
-          image: "assets/images/nature/forest_red.jpg",
-          title: "Stuff",
-          identifier: "bfrs71834rncs"
-        },
-        {
-          image: "assets/images/nature/forest_red.jpg",
-          title: "Stuff",
-          identifier: "bfrs71834rncs"
-        },
-      ]
-    },
-    {
-      identifier: "324357t4n8j24d",
-      title: "SPH",
-      panels: [
-        {
-          image: "assets/images/nature/aurora.jpg",
-          title: "1.0",
-          identifier: "bfrs71834rncs"
-        },
-        {
-          image: "assets/images/nature/aurora.jpg",
-          title: "1.0",
-          identifier: "bfrs71834rncs"
-        },
-      ]
-    },
-    {
-      identifier: "huwh32437erhvunc2u47r8fm",
-      title: "TaskNet",
-      panels: [
-        {
-          image: "assets/images/nature/mountains.jpg",
-          title: "Aufgaben",
-          identifier: "bfrs71834rncs"
-        }
-      ]
-    }
-  ]
+  groups: Group[] = []
 
   scrollLeft(element_id: string) {
     if (isPlatformBrowser(this.platformId)) {
-      let panels = document.getElementById(element_id)
+      let panels = window.document.getElementById(element_id)
       if (panels) {
         let distance = panels.scrollLeft - 320;
         panels.scrollTo({ top: 0, left: distance, behavior: "smooth" });
@@ -133,11 +39,32 @@ export class HomeComponent {
 
   scrollRight(element_id: string) {
     if (isPlatformBrowser(this.platformId)) {
-      let panels = document.getElementById(element_id)
+      let panels = window.document.getElementById(element_id)
       if (panels) {
         let distance = panels.scrollLeft + 320;
         panels.scrollTo({ top: 0, left: distance, behavior: "smooth" });
       }
+    }
+  }
+
+  ngOnInit(): void {
+    let req = this.dataService.requestGroupPanels()
+    if (typeof req !== "boolean") {
+      req.subscribe({
+        next: data => {
+          if (data.success == 0) {
+            this.toastService.notify({type: 'danger', text: 'Abfragen der Gruppen-Panels fehlgeschlagen!', bor: 3000})
+          } else {
+            this.groups = data.groups
+          }
+        },
+        error: err => {
+          this.toastService.notify({type: 'danger', text: 'Abfragen der Gruppen-Panels fehlgeschlagen!', bor: 3000})
+        }
+      });
+    } else {
+      this.toastService.notify({type: 'info', text: 'Deine Session ist Abgelaufen!', bor: 3000})
+      window.location.href = "/logout"
     }
   }
 }

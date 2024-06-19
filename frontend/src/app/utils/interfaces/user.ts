@@ -4,5 +4,6 @@ export interface User {
   password?: string,
   image?: string,
   firstname?: string,
-  lastname?: string
+  lastname?: string,
+  token?: string
 }
