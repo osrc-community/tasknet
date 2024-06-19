@@ -42,6 +42,7 @@ export class UserSettingsComponent implements OnInit {
     firstname: new FormControl(),
     lastname: new FormControl(),
     email: new FormControl(),
+    password: new FormControl(),
   });
   submitted: boolean = false;
 
@@ -109,5 +110,8 @@ export class UserSettingsComponent implements OnInit {
     if (this.form.invalid) {
       return;
     }
+  }
+  deleteAccount() {
+
   }
 }
