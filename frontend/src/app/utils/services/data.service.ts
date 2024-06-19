@@ -23,4 +23,15 @@ export class DataService {
       return false
     }
   }
+
+  requestLists(identifier: string): Observable<any> | boolean{
+    if (this.user.token && this.user.id) {
+      return this.http.get(
+        this.backend + '/func/panel/' + identifier,
+        {params: {'auth_token': this.user.token, 'auth_user': this.user.id}}
+      );
+    } else {
+      return false
+    }
+  }
 }

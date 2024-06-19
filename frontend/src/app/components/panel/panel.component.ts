@@ -10,8 +10,9 @@ import {
   moveItemInArray,
   transferArrayItem
 } from "@angular/cdk/drag-drop";
-import {List} from "postcss/lib/list";
 import {PanelListItem} from "@utils/interfaces/panel-list-item";
+import {DataService} from "@utils/services/data.service";
+import {ToastService} from "@utils/services/toast.service";
 
 @Component({
   selector: 'component-panel',
@@ -29,89 +30,37 @@ import {PanelListItem} from "@utils/interfaces/panel-list-item";
 })
 export class PanelComponent implements OnInit {
   activatedRoute = inject(ActivatedRoute)
+  dataService = inject(DataService)
+  toastService = inject(ToastService)
 
   panel_id = ""
-  panel_name = "Kicker"
+  panel_name = "Lädt..."
 
-  lists: PanelList[] = [
-    {
-      title: "Liste 1",
-      entries: [
-        {
-          type: "type1",
-          message: "Message1"
-        },
-        {
-          type: "type1",
-          message: "Message2"
-        },
-        {
-          type: "type1",
-          message: "Message3"
-        },
-        {
-          type: "type1",
-          message: "Message4"
-        },
-        {
-          type: "type1",
-          message: "Message5"
-        },
-        {
-          type: "type1",
-          message: "Message6"
-        },
-        {
-          type: "type1",
-          message: "Message7"
-        },
-        {
-          type: "type1",
-          message: "Message8"
-        },
-        {
-          type: "type1",
-          message: "Message9"
-        },
-        {
-          type: "type1",
-          message: "Message10"
-        },
-        {
-          type: "type1",
-          message: "Message11"
-        },
-        {
-          type: "type1",
-          message: "Message12"
-        },
-        {
-          type: "type1",
-          message: "Message13"
-        },
-      ]
-    },
-    {
-      title: "Liste 2",
-      entries: [
-        {
-          type: "type1",
-          message: "Message2_1"
-        },
-        {
-          type: "type1",
-          message: "Message2_2"
-        },
-        {
-          type: "type1",
-          message: "Messagewaeshbvzdughvtnjrsbey2_3"
-        },
-      ]
-    },
-  ]
+  lists: PanelList[] = []
 
   ngOnInit() {
     this.panel_id = this.activatedRoute.snapshot.params['identifier'];
+
+    let req = this.dataService.requestLists(this.panel_id)
+    if (typeof req !== "boolean") {
+      req.subscribe({
+        next: data => {
+          if (data.success == 0) {
+            this.toastService.notify({type: 'danger', text: 'Abfragen der Gruppen-Panels fehlgeschlagen!', bor: 3000})
+          } else {
+            this.lists = data.result.lists
+            this.panel_name = data.result.title
+            console.log(data.result)
+          }
+        },
+        error: err => {
+          this.toastService.notify({type: 'danger', text: 'Abfragen der Gruppen-Panels fehlgeschlagen!', bor: 3000})
+        }
+      });
+    } else {
+      this.toastService.notify({type: 'info', text: 'Deine Session ist Abgelaufen!', bor: 3000})
+      window.location.href = "/logout"
+    }
   }
 
   addList() {

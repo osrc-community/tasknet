@@ -70,3 +70,49 @@ def get_groups_panels():
         return_list.append({"identifier": identifier, "title": title, "panels": panels_parsed})
 
     return JSONResponse({"success": 1, "groups": return_list})
+
+
+@router.get("/panel/{identifier}")
+def get_panel_lists(identifier: str) -> JSONResponse:
+    try:
+        db = DatabaseSqlite()
+        cursor = db.get_cursor()
+        return_object = []
+
+        sql = """SELECT title, image FROM panels WHERE identifier = ?"""
+        panel = cursor.execute(sql, (identifier,)).fetchone()
+        panel_title, panel_image = panel
+
+        sql_lists = """SELECT list_identifier FROM panel_list WHERE panel_identifier = ?"""
+        cursor.execute(sql_lists, (identifier,))
+        list_identifiers = cursor.fetchall()
+
+        lists_parsed: list = []
+
+        for a in list_identifiers:
+            list_identifier, = a
+            sql_list = """SELECT title FROM lists WHERE identifier = ?"""
+            list_title = cursor.execute(sql_list, (list_identifier,)).fetchone()[0]
+            entries_parsed: list = []
+
+            sql_entries = """SELECT entry_identifier FROM list_entries WHERE list_identifier = ?"""
+            entries = cursor.execute(sql_entries, (list_identifier,)).fetchall()
+            if len(entries) > 0:
+                for entry in entries:
+                    entry_identifier = entry[0]
+                    sql_entry = """SELECT * FROM entries WHERE identifier = ?"""
+                    entry = cursor.execute(sql_entry, (entry_identifier,)).fetchone()
+                    entry_identifier, entry_type, entry_message = entry
+                    entries_parsed.append({"type": entry_type, "message": entry_message})
+            lists_parsed.append({"title": list_title, "entries": entries_parsed})
+
+        return_object = {
+            "identifier": identifier,
+            "title": panel_title,
+            "image": panel_image,
+            "lists": lists_parsed
+        }
+
+        return JSONResponse({"success": 1, "result": return_object})
+    except Exception as e:
+        return JSONResponse({"success": 0, "message": e})
