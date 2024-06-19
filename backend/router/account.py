@@ -3,6 +3,7 @@ from fastapi.responses import JSONResponse, Response
 
 from database import DatabaseSqlite
 from models.AuthUser import AuthUser
+from models.DeleteUser import DeleteUser
 from models.UpdateUser import UpdateUser
 from models.CreateUser import CreateUser
 from utils.account import user_exists
@@ -97,3 +98,34 @@ async def update(user: UpdateUser) -> JSONResponse:
     cursor.close()
 
     return JSONResponse({"success": 0, "message": "Fehler während des Updates!"}, status_code=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+@router.delete("/delete")
+async def delete(user: DeleteUser) -> JSONResponse:
+    """
+    Delete a user from the database.
+
+    Delete-User:\n
+        email: str
+
+    Return:\n
+        JSONResponse:\n
+            success: 0|1
+            message: str
+    """
+    db = DatabaseSqlite()
+    cursor = db.get_cursor()
+    already_exists = user_exists(user.email)
+
+    if not already_exists:
+        return JSONResponse({"success": 0, "message": "Benutzer nicht gefunden!"}, status_code=status.HTTP_404_NOT_FOUND)
+
+    sql = "DELETE FROM users WHERE email = ?;"
+    cursor.execute(sql, (user.email,))
+
+    db.conn.commit()
+    if cursor.rowcount > 0:
+        return JSONResponse({"success": 1, "message": "Benutzer gelöscht!"}, status_code=status.HTTP_200_OK)
+    cursor.close()
+
+    return JSONResponse({"success": 0, "message": "Fehler während des Löschens!"}, status_code=status.HTTP_500_INTERNAL_SERVER_ERROR)
