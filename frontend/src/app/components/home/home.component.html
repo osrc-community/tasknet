@@ -2,7 +2,7 @@
   <div class="pt-10">
     <div class="">
       <ng-container *ngFor="let group of groups; let index=index">
-        <ng-container *ngTemplateOutlet="Panel; context: {group: group, panel_id: 'p_' + index}"></ng-container>
+        <ng-container *ngTemplateOutlet="Panel; context: {group: group, group_index: index}"></ng-container>
       </ng-container>
     </div>
   </div>
@@ -21,14 +21,14 @@
   </div>
 </ng-template>
 
-<ng-template #Panel let-group="group" let-id="panel_id">
+<ng-template #Panel let-group="group" let-index="group_index">
   <div class="bg-gray-700 mb-8 rounded-md">
     <div class="ml-12 pl-5 mr-12 pr-5 pt-6 mb-4 grid grid-cols-2">
       <div class="">
         <div class="grid grid-cols-subgrid col-span-3 whitespace-nowrap dark:text-white text-3xl">{{ group.title }}</div>
       </div>
       <div class="content-center flex justify-end mr-3">
-        <button class="text-white self-center">
+        <button class="text-white self-center" (click)="createPanelInGroup(index)">
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-8">
             <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"></path>
           </svg>
@@ -37,19 +37,19 @@
     </div>
     <div class="grid-flow-col flex auto-cols-min pb-10 pl-2 pr-2">
       <div class="me-3 content-center">
-        <button class="dark:text-white" (click)="scrollLeft(id)">
+        <button class="dark:text-white" (click)="scrollLeft(index)">
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-12">
             <path stroke-linecap="round" stroke-linejoin="round" d="m11.25 9-3 3m0 0 3 3m-3-3h7.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
           </svg>
         </button>
       </div>
-      <div id="{{ id }}" class="flex overflow-x-auto w-2/2 snap-mandatory snap-x" style="scrollbar-width: none;">
+      <div id="{{ index }}" class="flex overflow-x-auto w-2/2 snap-mandatory snap-x" style="scrollbar-width: none;">
         <ng-container *ngFor="let panel of group.panels">
           <ng-container *ngTemplateOutlet="PanelItem; context: {'panel': panel}"></ng-container>
         </ng-container>
       </div>
       <div class="ms-3 content-center">
-        <button class="dark:text-white" (click)="scrollRight(id)">
+        <button class="dark:text-white" (click)="scrollRight(index)">
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-12">
             <path stroke-linecap="round" stroke-linejoin="round" d="m12.75 15 3-3m0 0-3-3m3 3h-7.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
           </svg>
@@ -58,3 +58,33 @@
     </div>
   </div>
 </ng-template>
+
+<ng-container *ngIf="show_name_modal">
+  <div class="overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none justify-center items-center flex">
+    <div class="relative w-auto my-6 mx-auto max-w-6xl">
+      <!--content-->
+      <div class="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-gray-500 outline-none focus:outline-none">
+        <!--header-->
+        <div class="flex items-start justify-between p-5 border-b border-solid border-blueGray-200 rounded-t align-middle">
+          <h3 class="text-3xl font-semibold text-white">
+            Umbenennen
+          </h3>
+        </div>
+        <!--body-->
+        <div class="relative p-6 flex-auto">
+          <input [(ngModel)]="modal_output" class="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400" type="text">
+        </div>
+        <!--footer-->
+        <div class="flex items-center justify-center p-6 border-t border-solid border-blueGray-200 rounded-b">
+          <button class="text-red-500 background-transparent font-bold uppercase px-6 py-2 text-sm outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150" type="button" (click)="toggleNameModal()">
+            Abbrechen
+          </button>
+          <button class="bg-emerald-500 text-white active:bg-emerald-600 font-bold uppercase text-sm px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150" type="button" (click)="modalFunction()">
+            Speichern
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="opacity-25 fixed inset-0 z-40 bg-black"></div>
+</ng-container>

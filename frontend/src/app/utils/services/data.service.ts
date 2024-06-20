@@ -6,6 +6,9 @@ import {StorageService} from "@utils/services/storage.service";
 import {Group} from "@utils/interfaces/group";
 import {Router} from "@angular/router";
 import {Panel} from "@utils/interfaces/panel";
+import {PanelList} from "@utils/interfaces/panel-list";
+import {List} from "postcss/lib/list";
+import {PanelListItem} from "@utils/interfaces/panel-list-item";
 
 @Injectable({
   providedIn: 'root'
@@ -29,55 +32,84 @@ export class DataService implements OnInit {
     );
   }
 
-  group_create(group: Group) {
-
-  }
-
-  group_update(group: Group) {
-
-  }
-
-  group_delete(group_identifier: string) {
-
-  }
-
-  panel_create(group: Group) {
-
-  }
-
-  panel_update(panel: Panel): Observable<any> {
+  group_create(group: Group): Observable<any> {
     return this.http.post(
-      this.backend + '/func/patch',
+      this.backend + '/func/group/create',
+      group
+    );
+  }
+
+  group_update(group: Group): Observable<any> {
+    return this.http.patch(
+      this.backend + '/func/group/patch',
+      group
+    );
+  }
+
+  group_delete(group_identifier: string): Observable<any> {
+    return this.http.delete(
+      this.backend + '/func/group/delete/' + group_identifier,
+    );
+  }
+
+  panel_create(panel: Panel): Observable<any> {
+    return this.http.post(
+      this.backend + '/func/panel/create',
       panel
     );
   }
 
-  panel_delete(group_identifier: string) {
-
+  panel_update(panel: Panel): Observable<any> {
+    return this.http.patch(
+      this.backend + '/func/panel/patch',
+      panel
+    );
   }
 
-  list_create(group: Group) {
-
+  panel_delete(panel_identifier: string): Observable<any> {
+    return this.http.delete(
+      this.backend + '/func/panel/delete/' + panel_identifier
+    );
   }
 
-  list_update(group: Group) {
-
+  list_create(list: PanelList, panel_identifier: string): Observable<any> {
+    return this.http.post(
+      this.backend + '/func/list/create/' + panel_identifier,
+      list
+    );
   }
 
-  list_delete(group_identifier: string) {
-
+  list_update(list: PanelList): Observable<any> {
+    return this.http.patch(
+      this.backend + '/func/list/patch',
+      list
+    );
   }
 
-  entry_create(group: Group) {
-
+  list_delete(list_identifier: string): Observable<any> {
+    return this.http.delete(
+      this.backend + '/func/list/delete/' + list_identifier
+    );
   }
 
-  entry_update(group: Group) {
-
+  entry_create(entry: PanelListItem, list_identifier: string): Observable<any> {
+    return this.http.post(
+      this.backend + '/func/entry/create',
+      entry
+    );
   }
 
-  entry_delete(group_identifier: string) {
+  entry_update(entry: PanelListItem): Observable<any> {
+    return this.http.patch(
+      this.backend + '/func/entry/patch',
+      entry
+    );
+  }
 
+  entry_delete(entry_identifier: string): Observable<any> {
+    return this.http.delete(
+      this.backend + '/func/entry/delete/' + entry_identifier
+    );
   }
 
   /*

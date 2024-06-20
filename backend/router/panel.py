@@ -160,14 +160,14 @@ def delete_group(identifier: str) -> JSONResponse:
 
         # Check if group exists
         cursor.execute("SELECT id FROM groups WHERE name = ?", (identifier,))
-        group_id = cursor.fetchone()
-        if not group_id:
+        group_identifier = cursor.fetchone()
+        if not group_identifier:
             return JSONResponse(
                 {"success": 0, "message": "Gruppe nicht gefunden!"},
                 status_code=status.HTTP_404_NOT_FOUND
             )
 
-        cursor.execute("DELETE FROM group_users WHERE group_id = ?", (group_id[0],))
+        cursor.execute("DELETE FROM group_users WHERE group_id = ?", (group_identifier[0],))
 
         cursor.execute("DELETE FROM groups WHERE name = ?", (identifier,))
 
@@ -182,3 +182,45 @@ def delete_group(identifier: str) -> JSONResponse:
             {"success": 0, "message": str(e)},
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR
         )
+
+
+@router.post("/panel/create")
+def create_panel(identifier: str, description: str, users: list[str] = []) -> JSONResponse:
+    try:
+        db = DatabaseSqlite()
+        cursor = db.get_cursor()
+
+        cursor.execute("SELECT id FROM panels WHERE name =?", (identifier,))
+        if cursor.fetchone():
+            return JSONResponse(
+                {"success": 0, "message": "Panel bereits vorhanden!"},
+                status_code=status.HTTP_400_BAD_REQUEST
+            )
+
+        cursor.execute("INSERT INTO panels ({identifier}, description) VALUES (?, ?)", (identifier, description))
+        panel_identifier = cursor.lastrowid
+
+        for user in users:
+            cursor.execute(
+                "INSERT INTO panel_users (panel_identifier, user_identifier) VALUES (?, (SELECT id FROM users WHERE email =?))",
+                (panel_identifier, user))
+
+        db.conn.commit()
+
+        return JSONResponse(
+            {"success": 1, "message": "Panel erfolgreich erstellt!", "panel": {
+                f"identifier": Panel[0],
+                "name": Panel[1],
+                "description": Panel[2]
+            }},
+            status_code=status.HTTP_201_CREATED
+        )
+    except Exception as e:
+        return JSONResponse(
+            {"success": 0, "message": str(e)},
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR
+        )
+
+
+
+
