@@ -1,5 +1,6 @@
 from fastapi import APIRouter, Depends
 from fastapi.responses import JSONResponse
+from starlette import status
 
 from database import DatabaseSqlite
 from models.Group import Group
@@ -13,29 +14,6 @@ router = APIRouter(
         Depends(verify_token),
     ]
 )
-
-
-@router.get("/groups")
-def get_groups() -> JSONResponse:
-    """
-    Token: 3955df76-911f-4ab4-ba61-5924162b19d5\n
-    Nutzer: 1\n
-    Returns all Groups\n
-    Group: \n
-        identifier: str
-        title: str
-    """
-    db = DatabaseSqlite()
-    cursor = db.get_cursor()
-    cursor.execute("SELECT * FROM groups")
-    result = cursor.fetchall()
-    groupList: list = []
-
-    for group in result:
-        identifier, title = group
-        groupList.append(Group(identifier=identifier, title=title).__dict__)
-
-    return JSONResponse({"success": 1, "result": groupList})
 
 
 @router.get("/groups_panels")
@@ -115,3 +93,92 @@ def get_panel_lists(identifier: str) -> JSONResponse:
         return JSONResponse({"success": 1, "result": return_object})
     except Exception as e:
         return JSONResponse({"success": 0, "message": e})
+
+
+@router.post("/group/create")
+def create_group(identifier: str, users: list[str] = []) -> JSONResponse:
+    try:
+        db = DatabaseSqlite()
+        cursor = db.get_cursor()
+
+        sql = """INSERT INTO groups (name) VALUES (?)"""
+        cursor.execute(sql, (identifier,))
+
+        group_identifier = cursor.lastrowid
+
+        for user in users:
+            sql = """INSERT INTO group_users (group_id, user_id) VALUES (?, (SELECT id FROM users WHERE email = ?))"""
+            cursor.execute(sql, (group_identifier, user))
+
+        db.conn.commit()
+
+        return JSONResponse({"success": 1, "message": "Gruppe erfolgreich erstellt!"},
+                            status_code=status.HTTP_201_CREATED)
+    except Exception as e:
+        return JSONResponse({"success": 0, "message": str(e)}, status_code=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+@router.post("/group/patch")
+def patch_group(identifier: str, new_identifier: str = None, add_users: list[str] = [],
+                remove_users: list[str] = []) -> JSONResponse:
+    try:
+        db = DatabaseSqlite()
+        cursor = db.get_cursor()
+
+        sql = """SELECT id FROM groups WHERE name = ?"""
+        cursor.execute(sql, (identifier,))
+        group_identifier = cursor.fetchone()
+        if not group_identifier:
+            return JSONResponse({"success": 0, "message": "Gruppe nicht gefunden!"},
+                                status_code=status.HTTP_404_NOT_FOUND)
+
+        if new_identifier:
+            sql = """UPDATE groups SET name = ? WHERE name = ?"""
+            cursor.execute(sql, (new_identifier, identifier))
+
+        for user in add_users:
+            sql = """INSERT INTO group_users (group_id, user_id) VALUES (?, (SELECT id FROM users WHERE email = ?))"""
+            cursor.execute(sql, (group_identifier, user))
+
+        for user in remove_users:
+            sql = """DELETE FROM group_users WHERE group_id = ? AND user_id = (SELECT id FROM users WHERE email = ?)"""
+            cursor.execute(sql, (group_identifier, user))
+
+        db.conn.commit()
+
+        return JSONResponse({"success": 1, "message": "Gruppe erfolgreich aktualisiert!"},
+                            status_code=status.HTTP_200_OK)
+    except Exception as e:
+        return JSONResponse({"success": 0, "message": str(e)}, status_code=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+@router.delete("/group/delete/{identifier}")
+def delete_group(identifier: str) -> JSONResponse:
+    try:
+        db = DatabaseSqlite()
+        cursor = db.get_cursor()
+
+        # Check if group exists
+        cursor.execute("SELECT id FROM groups WHERE name = ?", (identifier,))
+        group_id = cursor.fetchone()
+        if not group_id:
+            return JSONResponse(
+                {"success": 0, "message": "Gruppe nicht gefunden!"},
+                status_code=status.HTTP_404_NOT_FOUND
+            )
+
+        cursor.execute("DELETE FROM group_users WHERE group_id = ?", (group_id[0],))
+
+        cursor.execute("DELETE FROM groups WHERE name = ?", (identifier,))
+
+        db.conn.commit()
+
+        return JSONResponse(
+            {"success": 1, "message": "Gruppe erfolgreich gelöscht!"},
+            status_code=status.HTTP_200_OK
+        )
+    except Exception as e:
+        return JSONResponse(
+            {"success": 0, "message": str(e)},
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR
+        )
