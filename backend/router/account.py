@@ -120,12 +120,14 @@ async def delete(user: DeleteUser) -> JSONResponse:
     if not already_exists:
         return JSONResponse({"success": 0, "message": "Benutzer nicht gefunden!"}, status_code=status.HTTP_404_NOT_FOUND)
 
-    sql = "DELETE FROM users WHERE email = ?;"
-    cursor.execute(sql, (user.email,))
 
+    #set disabled to true
+
+    sql = "UPDATE users SET disabled = 1 WHERE email = ?;"
+    cursor.execute(sql, (user.email,))
     db.conn.commit()
     if cursor.rowcount > 0:
-        return JSONResponse({"success": 1, "message": "Benutzer gelöscht!"}, status_code=status.HTTP_200_OK)
+        return JSONResponse({"success": 1, "message": "Benutzer wurde deaktiviert!"}, status_code=status.HTTP_200_OK)
     cursor.close()
 
     return JSONResponse({"success": 0, "message": "Fehler während des Löschens!"}, status_code=status.HTTP_500_INTERNAL_SERVER_ERROR)

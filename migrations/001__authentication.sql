@@ -4,7 +4,8 @@ CREATE TABLE 'users' (
     password_hash text NOT NULL,
     image text,
     firstname text NOT NULL,
-    lastname text NOT NULL
+    lastname text NOT NULL,
+    disabled boolean NOT NULL
 );
 
 CREATE TABLE 'auth_tokens' (
