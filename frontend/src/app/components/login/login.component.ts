@@ -69,7 +69,7 @@ export class LoginComponent implements OnInit {
           this.toastService.notify({type: 'danger', text: 'Anmeldung Fehlgeschlagen!', bor: 3000})
         } else {
           let rtn_user = <User>data['user']
-          if (rtn_user.image == null) {
+          if (rtn_user.image == null || rtn_user.image == '' || rtn_user.image == ' ') {
             rtn_user.image = "assets/images/default_user.png"
           }
           this.storageService.saveUser(rtn_user);

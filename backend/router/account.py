@@ -60,10 +60,10 @@ async def update(user: UpdateUser) -> JSONResponse:
 
     Update-User:\n
         email: str
-        password: str
-        image: str
-        firstname: str
-        lastname: str
+        password: Optional[str]
+        image: Optional[str]
+        firstname: Optional[str]
+        lastname: Optional[str]
 
     Return:\n
         JSONResponse:\n

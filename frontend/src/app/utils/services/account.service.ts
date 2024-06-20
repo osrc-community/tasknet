@@ -27,11 +27,14 @@ export class AccountService {
   updateAccount(user: User): Observable<any> {
     return this.http.post(
       this.backend + '/account/update',
-      {"image": user.image}
+      user
     );
   }
 
-  deleteAccount() {
-
+  deleteAccount(email: string): Observable<any> {
+    return this.http.delete(
+      this.backend + '/account/delete',
+      {"body":{"email": email}}
+    );
   }
 }

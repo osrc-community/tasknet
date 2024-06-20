@@ -2,7 +2,7 @@
   <div class="overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none justify-center items-center flex">
     <div class="relative w-auto my-6 mx-auto max-w-6xl">
       <!--content-->
-      <div class="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-gray-500 outline-none focus:outline-none">
+      <div class="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-gray-600 outline-none focus:outline-none">
         <!--header-->
         <div class="flex items-start justify-between p-5 border-b border-solid border-blueGray-200 rounded-t align-middle">
           <h3 class="text-3xl font-semibold text-white">
@@ -49,9 +49,10 @@
             <div class="">
               <div class="content-center grid grid-cols-2">
                 <div class="justify-center grid">
+                  <h1 class="text-2xl text-white mb-6">Bild ändern</h1>
                   <div class="content-center">
                     <div class="justify-center grid cursor-pointer" (click)="toggleUploadImageModal()">
-                      <img ngSrc="{{ user.image }}" class="rounded-full z-0" alt="User Image" width="96" height="96" priority>
+                      <img src="{{ user.image }}" class="rounded-full z-0" alt="User Image" width="96" height="96">
                       <div class="bg-slate-500 text-white rounded-full -mt-7 w-fit ms-16 z-10 relative">
                         <div class="p-2">
                           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
@@ -67,15 +68,26 @@
                   </div>
                 </div>
                 <div class="">
+                  <h1 class="text-2xl text-white mb-6">Nutzerdaten ändern</h1>
                   <form [formGroup]="form" (ngSubmit)="onSubmit()">
                     <div class="grid gap-6 mb-6 grid-cols-2">
                       <div>
                         <label for="firstname" class="block mb-2 text-md font-medium text-gray-900 dark:text-white">Vorname</label>
                         <input type="text" id="firstname" class="bg-gray-50 border border-gray-300 text-gray-900 text-md rounded-md focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" formControlName="firstname" required />
+                        <ng-container *ngIf="submitted && f['firstname'].errors">
+                          <div class="text-red-500 text-xs italic mt-2">
+                            <div *ngIf="f['firstname'].errors?.['required']">Vorname is required</div>
+                          </div>
+                        </ng-container>
                       </div>
                       <div>
                         <label for="lastname" class="block mb-2 text-md font-medium text-gray-900 dark:text-white">Nachname</label>
                         <input type="text" id="lastname" class="bg-gray-50 border border-gray-300 text-gray-900 text-md rounded-md focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" formControlName="lastname" required />
+                        <ng-container *ngIf="submitted && f['lastname'].errors">
+                          <div class="text-red-500 text-xs italic mt-2">
+                            <div *ngIf="f['lastname'].errors?.['required']">Nachname is required</div>
+                          </div>
+                        </ng-container>
                       </div>
                     </div>
                     <div class="mb-6">
@@ -99,77 +111,119 @@
         </div>
       </ng-container>
       <ng-container *ngIf="page == 'security'">
-        <form [formGroup]="form" (ngSubmit)="onSubmit()">
-          <div  class="space-y-3 md:space-y-6 grid-cols-2">
-          <div>
-            <p style="color: white">Hier haben sie die Möglichkeit ihr Passwort zu ändern.<br>
-            Dafür benötigen Sie nur das alte Passwort und ihr neues.<br><br></p>
-            <label for="password" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Altes Passwort</label>
-              <input type="password" id="oldpassword"
-                     class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                     style="width: 300px;"
-                     required />
-            <ng-container *ngIf="submitted && f['password'].errors">
-              <div class="text-red-500 text-xs italic mt-2">
-                <div *ngIf="f['password'].errors?.['required']">Email is required</div>
-              </div>
-            </ng-container>
-          </div>
-          <div class="mb-6">
-            <label for="password" class="block  mb-2 text-sm font-medium text-gray-900 dark:text-white">Neues Passwort</label>
-              <input type="password" id="password"
-                     class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                     style="width: 300px;"
-                     required />
-            <ng-container *ngIf="submitted && f['password'].errors">
-              <div class="text-red-500 text-xs italic mt-2">
-                <div *ngIf="f['password'].errors?.['required']">Email is required</div>
-              </div>
-            </ng-container>
-          </div>
-
-        <div class="mb-6">
-          <label for="password" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Passwort bestätigen</label>
-            <input type="password" id="newpassword"
-                   class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                   style="width: 300px;"
-                   required />
-          <ng-container *ngIf="submitted && f['password'].errors">
-              <div class="text-red-500 text-xs italic mt-2">
-                <div *ngIf="f['password'].errors?.['required']">Email is required</div>
-              </div>
-            </ng-container>
-        </div>
-        <div class="pb-10">
-          <button (click)="updatePassword" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Passwort Aktualisieren</button>
-        </div>
-            </div>
-              <div>
-                <p style="color: white">
-                  Hier können Sie ihren Account dauerhaft mit allen Inhalten Löschen.<br>
-                  Bedenken Sie sobald der Account gelöscht ist, ist dieser Dauerhaft gelöscht!<br><br>
-                </p>
-                  <div>
-                   <button (click)="deleteAccount" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Account Löschen</button>
-                  </div>
+        <div class="p-10">
+          <div class="grid grid-cols-2">
+            <form [formGroup]="password_form" (ngSubmit)="updatePassword()">
+              <div class="justify-self-center">
+                <h1 class="text-2xl text-white mb-6">Passwort ändern</h1>
+                <div class="mb-4">
+                  <label for="old_password" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Altes Passwort</label>
+                  <input
+                    type="password"
+                    id="old_password"
+                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                    style="width: 300px;"
+                    formControlName="old_password"
+                    required
+                  />
+                  <ng-container *ngIf="password_form_submitted && password_f['old_password'].errors">
+                    <div class="text-red-500 text-xs italic mt-2">
+                      <div *ngIf="password_f['old_password'].errors?.['required']">Altes Passwort is required</div>
+                    </div>
+                  </ng-container>
                 </div>
-      </form>
+                <div class="mb-4">
+                  <label for="new_password" class="block  mb-2 text-sm font-medium text-gray-900 dark:text-white">Neues Passwort</label>
+                  <input
+                    type="password"
+                    id="new_password"
+                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                    style="width: 300px;"
+                    formControlName="new_password"
+                    required
+                  />
+                  <ng-container *ngIf="password_form_submitted && password_f['new_password'].errors">
+                    <div class="text-red-500 text-xs italic mt-2">
+                      <div *ngIf="password_f['new_password'].errors?.['required']">Passwort is required</div>
+                    </div>
+                  </ng-container>
+                </div>
+                <div class="mb-6">
+                  <label for="val_password" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Passwort bestätigen</label>
+                  <input
+                    type="password"
+                    id="val_password"
+                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                    style="width: 300px;"
+                    formControlName="val_password"
+                    required
+                  />
+                  <ng-container *ngIf="password_form_submitted && password_f['val_password'].errors">
+                    <div class="text-red-500 text-xs italic mt-2">
+                      <div *ngIf="password_f['val_password'].errors?.['required']">Passwort is required</div>
+                    </div>
+                  </ng-container>
+                </div>
+                <div class="">
+                  <input type="submit" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" value="Passwort Aktualisieren">
+                </div>
+              </div>
+            </form>
+            <div class="justify-self-center">
+              <h1 class="text-2xl text-white mb-6">Account Deaktivieren</h1>
+              <div class="text-gray-300 mb-6">
+                <div class="mb-2">
+                  Hier können Sie Ihren Account Deaktivieren lassen.
+                </div>
+                <div>
+                  Falls Sie Ihre Daten komplett löschen lassen wollen, kontaktieren Sie bitte Ihren Admin.
+                </div>
+              </div>
+              <div>
+                <button (click)="deleteAccount()" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Deaktivieren</button>
+              </div>
+            </div>
+          </div>
+        </div>
       </ng-container>
       <ng-container *ngIf="page == 'groups'">
-        <div  class="space-y-3 md:space-y-6 grid-cols-2">
-          <p style="color: white;">
-            Hier können Sie leute zu Ihren Task einladen um mit Ihnen gemeinsam Projekte zu Koodinieren.<br>
-            Dies kann eure Gruppenarbeit oder Gruppen Projekte deutlich vereinfachen.<br>
-            <br><br></p>
-          <div>
-            <label for="groupname" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Gruppenname</label>
-            <input type="text" id="groupname"
-                   class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                   style="width: 300px;"
-                   required />
-            <p><br><br></p>
-            <button (click)="groupname" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Gruppe erstellen</button>
+        <div class="p-10">
+          <div class="grid grid-cols-2 mb-6">
+            <div class="justify-self-center">
+              <h1 class="text-2xl text-white mb-6">Gruppe Anlegen</h1>
+              <div>
+                <label for="groupname" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Gruppenname</label>
+                <input
+                  type="text" id="groupname"
+                  class="mb-6 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                  style="width: 300px;"
+                  required
+                />
+                <button (click)="groupname()" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Gruppe erstellen</button>
+              </div>
+            </div>
+            <div class="justify-self-center">
+              <h1 class="text-2xl text-white mb-6">Gruppe Verwalten</h1>
+              <div class="text-white mb-6">
+                <div>Hier können Sie bereits existierende Gruppen verwalten und neue Mitglieder hinzufügen.</div>
+              </div>
+              <div>
+                <form>
+                  <label for="group" class="block mb-2 text-gray-900 dark:text-white">Gruppe</label>
+                  <select [(ngModel)]="selectedGroup" [ngModelOptions]="{standalone: true}" id="group" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                    <option [value]="'-'" selected>Auswählen</option>
+                    <option *ngFor="let option of groups" [value]="option.identifier">{{ option.title }}</option>
+                  </select>
+                </form>
+              </div>
+            </div>
           </div>
+          <ng-container *ngIf="selectedGroup != '-'">
+            <hr *ngIf="selectedGroup != '-'">
+            <div class="mt-6 text-white">
+              In Arbeit
+            </div>
+          </ng-container>
         </div>
       </ng-container>
     </div>

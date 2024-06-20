@@ -31,8 +31,18 @@ async def login(login_user: LoginUser, response: Response) -> JSONResponse:
 
     db = DatabaseSqlite()
     cursor = db.get_cursor()
-    cursor.execute("SELECT id,email,password_hash,image,firstname,lastname from users WHERE email LIKE ?", (login_user.email,))
+    sql = """
+        SELECT id, email, password_hash, image, firstname, lastname 
+        FROM users 
+        WHERE email LIKE ? 
+        AND disabled=false
+    """
+    cursor.execute(sql, (login_user.email,))
     result = cursor.fetchone()
+
+    if result is None:
+        response.status_code = status.HTTP_401_UNAUTHORIZED
+        return JSONResponse({"success": 0, "message": "Falsche Email oder Passwort"})
 
     id, email, password_hash, image, firstname, lastname = result
     user = AuthUser(id=id, email=email, password_hash=password_hash, image=image, firstname=firstname, lastname=lastname)

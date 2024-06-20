@@ -1,7 +1,7 @@
 import {Component, inject, OnInit} from '@angular/core';
 import {User} from "@utils/interfaces/user";
 import {StorageService} from "@utils/services/storage.service";
-import {NgIf, NgOptimizedImage} from "@angular/common";
+import {NgForOf, NgIf, NgOptimizedImage} from "@angular/common";
 import {
   AbstractControl,
   FormBuilder,
@@ -13,6 +13,10 @@ import {
 } from "@angular/forms";
 import {ActivatedRoute, Router} from "@angular/router";
 import {AccountService} from "@utils/services/account.service";
+import {DataService} from "@utils/services/data.service";
+import {Group} from "@utils/interfaces/group";
+import {ToastService} from "@utils/services/toast.service";
+import {isSetEqual} from "@angular/compiler-cli/src/ngtsc/incremental/semantic_graph";
 
 @Component({
   selector: 'component-user-settings',
@@ -21,22 +25,26 @@ import {AccountService} from "@utils/services/account.service";
     NgIf,
     ReactiveFormsModule,
     NgOptimizedImage,
-    FormsModule
+    FormsModule,
+    NgForOf
   ],
   templateUrl: './user-settings.component.html',
   styleUrl: './user-settings.component.scss'
 })
 export class UserSettingsComponent implements OnInit {
-  private formBuilder = inject(FormBuilder);
-  storageService = inject(StorageService)
+  formBuilder = inject(FormBuilder);
+  storageService = inject(StorageService);
   activatedRoute = inject(ActivatedRoute);
   router = inject(Router);
   accountService = inject(AccountService);
+  dataService = inject(DataService);
+  toastService = inject(ToastService);
 
   page = this.activatedRoute.snapshot.params['page'];
   pages = ["general", "security", "groups",]
   user: User = this.storageService.getUser();
   showModal = false;
+  groups: Group[] = []
 
   form: FormGroup = new FormGroup({
     firstname: new FormControl(),
@@ -46,8 +54,17 @@ export class UserSettingsComponent implements OnInit {
   });
   submitted: boolean = false;
 
+  password_form: FormGroup = new FormGroup({
+    firstname: new FormControl(),
+    lastname: new FormControl(),
+    email: new FormControl(),
+    password: new FormControl(),
+  });
+  password_form_submitted: boolean = false;
+
   image: string | ArrayBuffer | null = "";
   image_event: any;
+  selectedGroup: string = "-";
 
   ngOnInit(): void {
     this.user = this.storageService.getUser()
@@ -62,10 +79,28 @@ export class UserSettingsComponent implements OnInit {
         email: [this.user.email, [Validators.required, Validators.email]],
       }
     );
+
+    this.password_form = this.formBuilder.group(
+      {
+        old_password: ['', [Validators.required]],
+        new_password: ['', [Validators.required]],
+        val_password: ['', [Validators.required]]
+      }
+    );
+
+    this.dataService.requestGroupPanels().subscribe({
+      next: (data) => {
+        this.groups = data.groups
+      }
+    })
   }
 
   get f(): { [key: string]: AbstractControl } {
     return this.form.controls;
+  }
+
+  get password_f(): { [key: string]: AbstractControl } {
+    return this.password_form.controls;
   }
 
   toggleUploadImageModal() {
@@ -73,17 +108,15 @@ export class UserSettingsComponent implements OnInit {
   }
 
   processImage() {
-    let new_user: User = <User>{image: ''}
+    let new_user: User = <User>{email: this.user.email, image: this.image}
     this.accountService.updateAccount(new_user).subscribe({
       next: data => {
         if (data.success == 0) {
-          console.log("Failed to log in!") //TODO mit Toast ersetzen!
+          this.toastService.notify({type: 'warning', text: 'Updaten des Bildes fehlgeschlagen!', bor: 3000})
         } else {
-          console.log("Hat jeklappt") //TODO mit Toast ersetzen!
+          this.toastService.notify({type: 'info', text: 'Melde dich erneut an, um deinen Nutzer zu Aktualisieren.', bor: 3000})
+          this.toggleUploadImageModal()
         }
-      },
-      error: err => {
-        console.log("Failed to log in!") //TODO mit Toast ersetzen!
       }
     });
   }
@@ -102,7 +135,16 @@ export class UserSettingsComponent implements OnInit {
   }
 
   deleteImage() {
-    console.log("Delete Image!")
+    let new_user: User = <User>{email: this.user.email, image: ''}
+    this.accountService.updateAccount(new_user).subscribe({
+      next: data => {
+        if (data.success == 0) {
+          this.toastService.notify({type: 'warning', text: 'Löschen des Bildes fehlgeschlagen!', bor: 3000})
+        } else {
+          this.toastService.notify({type: 'info', text: 'Melde dich erneut an, um deinen Nutzer zu Aktualisieren.', bor: 3000})
+        }
+      }
+    });
   }
 
   onSubmit() {
@@ -110,14 +152,71 @@ export class UserSettingsComponent implements OnInit {
     if (this.form.invalid) {
       return;
     }
-  }
-  deleteAccount() {
 
-    //Todo Delete Funktion vom Backend einfügen
+    let user: User = <User>{
+      email: this.f['email'].value,
+      firstname: this.f['firstname'].value,
+      lastname: this.f['lastname'].value
+    }
+
+    this.accountService.updateAccount(user).subscribe({
+      next: data => {
+        if (data.success == 0) {
+          this.toastService.notify({
+            type: 'warning',
+            text: 'Etwas ist beim Updaten des Nutzers schiefgelaufen. Probiere es später erneut.',
+            bor: 3000
+          })
+        } else {
+          this.toastService.notify({
+            type: 'info',
+            text: 'Aktualisierung des Nutzers erfolgreich. Melde dich erneut an, um die Aktualisierung zu beenden.',
+            bor: 3000
+          })
+        }
+      }
+    });
   }
+
+  deleteAccount() {
+    if (this.user.email != null) {
+      this.accountService.deleteAccount(this.user.email).subscribe({
+        next: data => {
+          this.toastService.notify({
+            type: 'info',
+            text: 'Deaktierung deines Accounts vollständig. Du wirst jetzt abgemeldet!',
+            bor: 3000
+          })
+          this.router.navigateByUrl('/logout')
+        }
+      });
+    }
+  }
+
   updatePassword(){
-    //Todo Update Funktion vom Backend einfügen
+    this.password_form_submitted = true;
+    if (this.password_form.invalid) {
+      return;
+    }
+
+    if (this.password_form.valid) {
+      let user: User = <User>{
+        email: this.f['email'].value,
+        password: this.password_f['new_password'].value
+      }
+
+      this.accountService.updateAccount(user).subscribe({
+        next: data => {
+          if (data.success == 0) {
+            this.toastService.notify({type: 'warning', text: 'Etwas ist beim Updaten des Nutzers schiefgelaufen. Probiere es später erneut.', bor: 3000})
+          } else {
+            this.toastService.notify({type: 'info', text: 'Aktualisierung des Nutzers erfolgreich. Melde dich erneut an, um die Aktualisierung zu beenden.', bor: 3000})
+          }
+        }
+      });
+    }
   }
+
   groupname() {
     //Todo Gruppen mit dem geählten Namen erstelen aus dem Backend einfügen
   }

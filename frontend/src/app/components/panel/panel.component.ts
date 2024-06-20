@@ -92,7 +92,6 @@ export class PanelComponent implements OnInit {
     this.lists[list_index].entries.push({type: "-", message: "Neuer Eintrag"})
   }
 
-
   renameElement(item_index: number, list_index: number) {
     this.item_index = item_index
     this.list_index = list_index
