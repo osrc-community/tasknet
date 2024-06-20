@@ -1,7 +1,7 @@
 import {Panel} from "@utils/interfaces/panel";
 
 export interface Group {
-  identifier: string,
+  identifier?: string,
   title: string,
-  panels: Panel[]
+  panels?: Panel[]
 }

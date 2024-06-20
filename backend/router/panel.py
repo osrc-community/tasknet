@@ -77,7 +77,6 @@ def get_panel_lists(identifier: str) -> JSONResponse:
     try:
         db = DatabaseSqlite()
         cursor = db.get_cursor()
-        return_object = []
 
         sql = """SELECT title, image FROM panels WHERE identifier = ?"""
         panel = cursor.execute(sql, (identifier,)).fetchone()

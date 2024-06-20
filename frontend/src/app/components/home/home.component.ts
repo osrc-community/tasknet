@@ -48,23 +48,14 @@ export class HomeComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    let req = this.dataService.requestGroupPanels()
-    if (typeof req !== "boolean") {
-      req.subscribe({
-        next: data => {
-          if (data.success == 0) {
-            this.toastService.notify({type: 'danger', text: 'Abfragen der Gruppen-Panels fehlgeschlagen!', bor: 3000})
-          } else {
-            this.groups = data.groups
-          }
-        },
-        error: err => {
+    this.dataService.requestGroupPanels().subscribe({
+      next: data => {
+        if (data.success == 0) {
           this.toastService.notify({type: 'danger', text: 'Abfragen der Gruppen-Panels fehlgeschlagen!', bor: 3000})
+        } else {
+          this.groups = data.groups
         }
-      });
-    } else {
-      this.toastService.notify({type: 'info', text: 'Deine Session ist Abgelaufen!', bor: 3000})
-      window.location.href = "/logout"
-    }
+      }
+    });
   }
 }

@@ -1,5 +1,5 @@
 import {Component, inject, OnInit} from '@angular/core';
-import {NgForOf, NgIf, NgTemplateOutlet} from "@angular/common";
+import {JsonPipe, NgForOf, NgIf, NgTemplateOutlet} from "@angular/common";
 import {ActivatedRoute} from "@angular/router";
 import {PanelList} from "@utils/interfaces/panel-list";
 import {
@@ -23,7 +23,8 @@ import {ToastService} from "@utils/services/toast.service";
     NgIf,
     CdkDropList,
     CdkDrag,
-    CdkDropListGroup
+    CdkDropListGroup,
+    JsonPipe
   ],
   templateUrl: './panel.component.html',
   styleUrl: './panel.component.scss'
@@ -40,27 +41,16 @@ export class PanelComponent implements OnInit {
 
   ngOnInit() {
     this.panel_id = this.activatedRoute.snapshot.params['identifier'];
-
-    let req = this.dataService.requestLists(this.panel_id)
-    if (typeof req !== "boolean") {
-      req.subscribe({
-        next: data => {
-          if (data.success == 0) {
-            this.toastService.notify({type: 'danger', text: 'Abfragen der Gruppen-Panels fehlgeschlagen!', bor: 3000})
-          } else {
-            this.lists = data.result.lists
-            this.panel_name = data.result.title
-            console.log(data.result)
-          }
-        },
-        error: err => {
+    this.dataService.requestLists(this.panel_id).subscribe({
+      next: data => {
+        if (data.success == 0) {
           this.toastService.notify({type: 'danger', text: 'Abfragen der Gruppen-Panels fehlgeschlagen!', bor: 3000})
+        } else {
+          this.lists = data.result.lists
+          this.panel_name = data.result.title
         }
-      });
-    } else {
-      this.toastService.notify({type: 'info', text: 'Deine Session ist Abgelaufen!', bor: 3000})
-      window.location.href = "/logout"
-    }
+      }
+    });
   }
 
   addList() {

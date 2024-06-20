@@ -15,8 +15,8 @@
           </button>
         </div>
       </div>
-      <div class="grid-flow-col flex pl-2 pr-2 pb-3">
-        <div class="p-3 pt-5 flex overflow-x-auto w-1/7" cdkDropListGroup>
+      <div class="grid-flow-col flex pl-2 pr-2 pb-3" cdkDropListGroup>
+        <div class="p-3 pt-5 flex overflow-x-auto w-1/7">
           <ng-container *ngFor="let list of lists">
             <div class="bg-gray-600 rounded-md me-3 h-fit min-w-64" style="width: 280px;">
               <div class="">
@@ -26,9 +26,10 @@
                   </h2>
                 </div>
                 <div class="overflow-y-auto max-h-[27rem]" cdkDropList [cdkDropListData]="list.entries" (cdkDropListDropped)="drop($event)">
+                  <div class="mb-0.5"></div>
                   <ng-container *ngFor="let item of list.entries; let last=last">
                     <div class="p-2 pt-1 pb-0 cursor-move tracking-wide" cdkDrag>
-                      <div class="bg-gray-700 rounded-md">
+                      <div class="bg-gray-700 rounded-md hover:border-gray-400 hover:border-2">
                         <h2 class="p-2 ps-3 pe-3 pb-3 text-white text-start text-2xl break-words select-none">
                           {{ item.message }}
                         </h2>
