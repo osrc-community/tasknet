@@ -5,6 +5,7 @@ import {Observable} from "rxjs";
 import {StorageService} from "@utils/services/storage.service";
 import {Group} from "@utils/interfaces/group";
 import {Router} from "@angular/router";
+import {Panel} from "@utils/interfaces/panel";
 
 @Injectable({
   providedIn: 'root'
@@ -44,8 +45,11 @@ export class DataService implements OnInit {
 
   }
 
-  panel_update(group: Group) {
-
+  panel_update(panel: Panel): Observable<any> {
+    return this.http.post(
+      this.backend + '/func/patch',
+      panel
+    );
   }
 
   panel_delete(group_identifier: string) {

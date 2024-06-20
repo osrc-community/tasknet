@@ -4,11 +4,11 @@
       <div class="grid grid-cols-2 content-center pb-3">
         <div class="pl-3">
           <h2 class="ps-2 text-white text-start text-3xl">
-            {{ panel_name }}
+            {{ panel.title }}
           </h2>
         </div>
         <div class="justify-self-end flex pr-1">
-          <button class="text-white self-center">
+          <button class="text-white self-center" (click)="addList()">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-8">
               <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
             </svg>
@@ -17,7 +17,7 @@
       </div>
       <div class="grid-flow-col flex pl-2 pr-2 pb-3" cdkDropListGroup>
         <div class="p-3 pt-5 flex overflow-x-auto w-1/7">
-          <ng-container *ngFor="let list of lists">
+          <ng-container *ngFor="let list of lists; let list_index=index">
             <div class="bg-gray-600 rounded-md me-3 h-fit min-w-64" style="width: 280px;">
               <div class="">
                 <div class="p-2">
@@ -27,17 +27,22 @@
                 </div>
                 <div class="overflow-y-auto max-h-[27rem]" cdkDropList [cdkDropListData]="list.entries" (cdkDropListDropped)="drop($event)">
                   <div class="mb-0.5"></div>
-                  <ng-container *ngFor="let item of list.entries; let last=last">
+                  <ng-container *ngFor="let item of list.entries; let last=last; let item_index=index">
                     <div class="p-2 pt-1 pb-0 cursor-move tracking-wide" cdkDrag>
-                      <div class="bg-gray-700 rounded-md hover:border-gray-400 hover:border-2">
+                      <div class="bg-gray-700 rounded-md hover:border-gray-400 hover:border-2 flex grid-flow-col auto-cols-min justify-between group">
                         <h2 class="p-2 ps-3 pe-3 pb-3 text-white text-start text-2xl break-words select-none">
                           {{ item.message }}
                         </h2>
+                        <button class="text-white self-center me-2 group-hover:block hidden" (click)="renameElement(item_index, list_index)">
+                          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-5">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10" />
+                          </svg>
+                        </button>
                       </div>
                     </div>
                   </ng-container>
                 </div>
-                <div class="p-1 pt-0 flex justify-start cursor-pointer" (click)="addElementToList()">
+                <div class="p-1 pt-0 flex justify-start cursor-pointer" (click)="addElementToList(list_index)">
                   <div class="rounded-md">
                     <div class="p-2 text-white text-2xl flex content-center">
                       <div class="grid content-center me-2">
@@ -45,7 +50,7 @@
                           <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
                         </svg>
                       </div>
-                      <div>
+                      <div class="select-none">
                         Hinzufügen
                       </div>
                     </div>
@@ -59,3 +64,33 @@
     </div>
   </div>
 </div>
+
+<ng-container *ngIf="showNameModal">
+  <div class="overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none justify-center items-center flex">
+    <div class="relative w-auto my-6 mx-auto max-w-6xl">
+      <!--content-->
+      <div class="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-gray-500 outline-none focus:outline-none">
+        <!--header-->
+        <div class="flex items-start justify-between p-5 border-b border-solid border-blueGray-200 rounded-t align-middle">
+          <h3 class="text-3xl font-semibold text-white">
+            Umbenennen
+          </h3>
+        </div>
+        <!--body-->
+        <div class="relative p-6 flex-auto">
+          <input [(ngModel)]="modal_output_name" class="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400" type="text">
+        </div>
+        <!--footer-->
+        <div class="flex items-center justify-center p-6 border-t border-solid border-blueGray-200 rounded-b">
+          <button class="text-red-500 background-transparent font-bold uppercase px-6 py-2 text-sm outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150" type="button" (click)="toggleNameModal()">
+            Abbrechen
+          </button>
+          <button class="bg-emerald-500 text-white active:bg-emerald-600 font-bold uppercase text-sm px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150" type="button" (click)="modalFunction()">
+            Speichern
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="opacity-25 fixed inset-0 z-40 bg-black"></div>
+</ng-container>
