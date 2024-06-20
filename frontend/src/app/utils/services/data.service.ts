@@ -32,10 +32,10 @@ export class DataService implements OnInit {
     );
   }
 
-  group_create(group: Group): Observable<any> {
+  group_create(title: string): Observable<any> {
     return this.http.post(
       this.backend + '/func/group/create',
-      group
+      {title: title}
     );
   }
 

@@ -1,6 +1,6 @@
 import hashlib
 import time
-import uuid
+from uuid import uuid4
 from fastapi import HTTPException
 
 from database import DatabaseSqlite
@@ -12,6 +12,14 @@ def hash_password(password) -> str:
     return hash_object.hexdigest()
 
 
+def gen_identifier() -> str:
+    """
+    7d529dd4-548b-4258-aa8e-23e34dc8d43d
+    """
+    text = str(uuid4()).replace("-", "")
+    return text
+
+
 def gen_token(user_id: int, ttl: int) -> str | None:
     """
     Generate a random token
@@ -20,7 +28,7 @@ def gen_token(user_id: int, ttl: int) -> str | None:
     :return: The token or None if an error occurred
     """
     timestamp = time.time()
-    token: str = uuid.uuid4().__str__()
+    token: str = uuid4().__str__()
     db = DatabaseSqlite()
     cursor = db.get_cursor()
 
@@ -60,3 +68,16 @@ def verify_token(auth_token: str, auth_user: int):
             raise HTTPException(status_code=401, detail="Token incorrect")
     else:
         print("Developer token found: ", auth_token)
+
+
+def identifier_exists(identifier: str, table: str, column: str) -> bool:
+    db = DatabaseSqlite()
+    cursor = db.get_cursor()
+    sql = f"SELECT '{column}' FROM '{table}' WHERE '{column}' LIKE '{identifier}'"
+    cursor.execute(sql)
+    result = cursor.fetchone()
+
+    if result is None:
+        return False
+    else:
+        return True

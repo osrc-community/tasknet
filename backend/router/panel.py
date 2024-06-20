@@ -3,9 +3,9 @@ from fastapi.responses import JSONResponse
 from starlette import status
 
 from database import DatabaseSqlite
-from models.Group import Group
+from models.CreateGroup import CreateGroup
 from models.Panel import Panel
-from utils.auth import verify_token
+from utils.auth import verify_token, gen_identifier, identifier_exists
 
 router = APIRouter(
     tags=["FUNCTIONS"],
@@ -96,24 +96,24 @@ def get_panel_lists(identifier: str) -> JSONResponse:
 
 
 @router.post("/group/create")
-def create_group(identifier: str, users: list[str] = []) -> JSONResponse:
+def create_group(group: CreateGroup) -> JSONResponse:
     try:
         db = DatabaseSqlite()
         cursor = db.get_cursor()
+        identifier = gen_identifier()
+        already_exists = identifier_exists(identifier, 'groups', 'identifier')
 
-        sql = """INSERT INTO groups (name) VALUES (?)"""
-        cursor.execute(sql, (identifier,))
+        if not already_exists:
+            sql = """INSERT INTO groups (identifier, title) VALUES (?, ?)"""
+            cursor.execute(sql, (identifier, group.title,))
 
-        group_identifier = cursor.lastrowid
+            db.conn.commit()
+            if cursor.rowcount > 0:
+                new_group = {"identifier": identifier, "title": group.title}
+                return JSONResponse({"success": 1, "message": "Erstellt", "group": new_group})
 
-        for user in users:
-            sql = """INSERT INTO group_users (group_id, user_id) VALUES (?, (SELECT id FROM users WHERE email = ?))"""
-            cursor.execute(sql, (group_identifier, user))
-
-        db.conn.commit()
-
-        return JSONResponse({"success": 1, "message": "Gruppe erfolgreich erstellt!"},
-                            status_code=status.HTTP_201_CREATED)
+        cursor.close()
+        return JSONResponse({"success": 0, "message": "Fehler!"}, status_code=status.HTTP_201_CREATED)
     except Exception as e:
         return JSONResponse({"success": 0, "message": str(e)}, status_code=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
@@ -220,7 +220,3 @@ def create_panel(identifier: str, description: str, users: list[str] = []) -> JS
             {"success": 0, "message": str(e)},
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR
         )
-
-
-
-

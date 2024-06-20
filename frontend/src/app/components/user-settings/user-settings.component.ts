@@ -62,6 +62,11 @@ export class UserSettingsComponent implements OnInit {
   });
   password_form_submitted: boolean = false;
 
+  group_form: FormGroup = new FormGroup({
+    group_name: new FormControl()
+  });
+  group_form_submitted: boolean = false;
+
   image: string | ArrayBuffer | null = "";
   image_event: any;
   selectedGroup: string = "-";
@@ -88,6 +93,16 @@ export class UserSettingsComponent implements OnInit {
       }
     );
 
+    this.group_form = this.formBuilder.group(
+      {
+        group_name: ['', [Validators.required]]
+      }
+    );
+
+    this.requestGroups();
+  }
+
+  requestGroups() {
     this.dataService.requestGroupPanels().subscribe({
       next: (data) => {
         this.groups = data.groups
@@ -101,6 +116,10 @@ export class UserSettingsComponent implements OnInit {
 
   get password_f(): { [key: string]: AbstractControl } {
     return this.password_form.controls;
+  }
+
+  get group_f(): { [key: string]: AbstractControl } {
+    return this.group_form.controls;
   }
 
   toggleUploadImageModal() {
@@ -217,7 +236,23 @@ export class UserSettingsComponent implements OnInit {
     }
   }
 
-  groupname() {
-    //Todo Gruppen mit dem geählten Namen erstelen aus dem Backend einfügen
+  createGroup() {
+    this.group_form_submitted = true;
+    if (this.group_form.invalid) {
+      return;
+    }
+
+    if (this.group_form.valid) {
+      this.dataService.group_create(this.group_f['group_name'].value).subscribe({
+        next: data => {
+          if (data.success == 0) {
+            this.toastService.notify({type: 'warning', text: 'Etwas ist beim erstellen der Gruppe fehlgeschlagen.', bor: 3000})
+          } else {
+            this.toastService.notify({type: 'info', text: 'Gruppe erstellt!', bor: 3000})
+            this.requestGroups();
+          }
+        }
+      });
+    }
   }
 }

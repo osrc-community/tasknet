@@ -7,12 +7,16 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
   let storageService = inject(StorageService)
   let user: User = storageService.getUser()
 
-  const authReq = req.clone({
-    setParams: {
-      auth_token: `${user.token}`,
-      auth_user: `${user.id}`
-    }
-  });
+  if (storageService.isLoggedIn()) {
+    const authReq = req.clone({
+      setParams: {
+        auth_token: `${user.token}`,
+        auth_user: `${user.id}`
+      }
+    });
 
-  return next(authReq);
+    return next(authReq);
+  } else {
+    return next(req)
+  }
 };
