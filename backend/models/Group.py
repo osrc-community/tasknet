@@ -7,5 +7,9 @@ class Group(BaseModel):
     title: str
 
 
-class CreateGroup(BaseModel):
-    title: Optional[str] = None
+class CreateGroup(Group):
+    pass
+
+
+class UpdateGroup(Group):
+    pass

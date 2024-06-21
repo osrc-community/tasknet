@@ -4,7 +4,7 @@ from starlette import status
 
 from database import DatabaseSqlite
 from models.Group import CreateGroup
-from models.Panel import Panel
+from models.Panel import CreatePanel, UpdatePanel
 from utils.auth import verify_token, gen_identifier, identifier_exists
 
 router = APIRouter(
@@ -14,40 +14,6 @@ router = APIRouter(
         Depends(verify_token),
     ]
 )
-
-
-@router.get("/groups_panels")
-def get_groups_panels():
-    db = DatabaseSqlite()
-    cursor = db.get_cursor()
-    sql = """
-    SELECT groups.identifier, groups.title
-    FROM groups
-    """
-    cursor.execute(sql)
-    groups = cursor.fetchall()
-
-    return_list: list = []
-
-    for group in groups:
-        identifier, title = group
-        sql_panels = """
-        SELECT panels.identifier, panels.title, panels.image
-        FROM group_panel 
-        JOIN panels ON group_panel.panel_identifier = panels.identifier
-        WHERE group_identifier = ?
-        """
-        panels_raw = cursor.execute(sql_panels, (identifier,)).fetchall()
-        panels_parsed = []
-        for panel in panels_raw:
-            p_identifier, p_title, p_image = panel
-            if p_image is None:
-                p_image = "assets/images/example.png"
-            panels_parsed.append(Panel(identifier=p_identifier, title=p_title, image=p_image).__dict__)
-
-        return_list.append({"identifier": identifier, "title": title, "panels": panels_parsed})
-
-    return JSONResponse({"success": 1, "groups": return_list})
 
 
 @router.get("/panel/{identifier}")
@@ -95,22 +61,22 @@ def get_panel_lists(identifier: str) -> JSONResponse:
         return JSONResponse({"success": 0, "message": e})
 
 
-@router.post("/group/create")
-def create_group(group: CreateGroup) -> JSONResponse:
+@router.post("/panel/create")
+def create_panel(panel: CreatePanel) -> JSONResponse:
     try:
         db = DatabaseSqlite()
         cursor = db.get_cursor()
         identifier = gen_identifier()
-        already_exists = identifier_exists(identifier, 'groups', 'identifier')
+        already_exists = identifier_exists(identifier, 'panels', 'identifier')
 
         if not already_exists:
-            sql = """INSERT INTO groups (identifier, title) VALUES (?, ?)"""
-            cursor.execute(sql, (identifier, group.title,))
+            sql = """INSERT INTO panels (identifier, title, image) VALUES (?, ?, ?)"""
+            cursor.execute(sql, (identifier, panel.title, panel.image))
 
             db.conn.commit()
             if cursor.rowcount > 0:
-                new_group = {"identifier": identifier, "title": group.title}
-                return JSONResponse({"success": 1, "message": "Erstellt", "group": new_group})
+                new_panel = {"identifier": identifier, "title": panel.title, "image": panel.image}
+                return JSONResponse({"success": 1, "message": "Erstellt", "panel": new_panel})
 
         cursor.close()
         return JSONResponse({"success": 0, "message": "Fehler!"}, status_code=status.HTTP_201_CREATED)
@@ -118,102 +84,59 @@ def create_group(group: CreateGroup) -> JSONResponse:
         return JSONResponse({"success": 0, "message": str(e)}, status_code=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
-@router.post("/group/patch")
-def patch_group(identifier: str, new_identifier: str = None, add_users: list[str] = [],
-                remove_users: list[str] = []) -> JSONResponse:
+@router.patch("/panel/patch")
+def patch_panel(panel: UpdatePanel) -> JSONResponse:
     try:
         db = DatabaseSqlite()
         cursor = db.get_cursor()
 
-        sql = """SELECT id FROM groups WHERE name = ?"""
-        cursor.execute(sql, (identifier,))
-        group_identifier = cursor.fetchone()
-        if not group_identifier:
-            return JSONResponse({"success": 0, "message": "Gruppe nicht gefunden!"},
-                                status_code=status.HTTP_404_NOT_FOUND)
+        exists = identifier_exists(panel.identifier, 'panels', 'identifier')
 
-        if new_identifier:
-            sql = """UPDATE groups SET name = ? WHERE name = ?"""
-            cursor.execute(sql, (new_identifier, identifier))
+        if not exists:
+            return JSONResponse({"success": 0, "message": "Panel exisitert nicht!"}, status_code=status.HTTP_404_NOT_FOUND)
 
-        for user in add_users:
-            sql = """INSERT INTO group_users (group_id, user_id) VALUES (?, (SELECT id FROM users WHERE email = ?))"""
-            cursor.execute(sql, (group_identifier, user))
+        sql = """UPDATE panels
+        SET
+            title = CASE WHEN ? IS NOT NULL THEN ? ELSE title END,
+            image = CASE WHEN ? IS NOT NULL THEN ? ELSE image END
+        WHERE
+            identifier = ?;"""
 
-        for user in remove_users:
-            sql = """DELETE FROM group_users WHERE group_id = ? AND user_id = (SELECT id FROM users WHERE email = ?)"""
-            cursor.execute(sql, (group_identifier, user))
+        cursor.execute(sql, (panel.title, panel.title, panel.image, panel.image, panel.identifier))
 
         db.conn.commit()
+        if cursor.rowcount > 0:
+            return JSONResponse({"success": 1, "message": "Gruppe geupdatet!"}, status_code=status.HTTP_200_OK)
+        cursor.close()
 
-        return JSONResponse({"success": 1, "message": "Gruppe erfolgreich aktualisiert!"},
-                            status_code=status.HTTP_200_OK)
+        return JSONResponse({"success": 0, "message": "Fehler während des Updates!"}, status_code=status.HTTP_500_INTERNAL_SERVER_ERROR)
     except Exception as e:
         return JSONResponse({"success": 0, "message": str(e)}, status_code=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
-@router.delete("/group/delete/{identifier}")
-def delete_group(identifier: str) -> JSONResponse:
+@router.delete("/panel/delete/{identifier}")
+def delete_panel(identifier: str) -> JSONResponse:
     try:
         db = DatabaseSqlite()
         cursor = db.get_cursor()
 
         # Check if group exists
-        cursor.execute("SELECT id FROM groups WHERE name = ?", (identifier,))
-        group_identifier = cursor.fetchone()
-        if not group_identifier:
+        exists = identifier_exists(identifier, 'panels', 'identifier')
+
+        if not exists:
             return JSONResponse(
-                {"success": 0, "message": "Gruppe nicht gefunden!"},
+                {"success": 0, "message": "Panel nicht gefunden!"},
                 status_code=status.HTTP_404_NOT_FOUND
             )
 
-        cursor.execute("DELETE FROM group_users WHERE group_id = ?", (group_identifier[0],))
-
-        cursor.execute("DELETE FROM groups WHERE name = ?", (identifier,))
+        cursor.execute("DELETE FROM panel_list WHERE panel_identifier = ?", (identifier,))
+        cursor.execute("DELETE FROM panels WHERE identifier = ?", (identifier,))
 
         db.conn.commit()
 
         return JSONResponse(
-            {"success": 1, "message": "Gruppe erfolgreich gelöscht!"},
+            {"success": 1, "message": "Panel erfolgreich gelöscht!"},
             status_code=status.HTTP_200_OK
-        )
-    except Exception as e:
-        return JSONResponse(
-            {"success": 0, "message": str(e)},
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR
-        )
-
-
-@router.post("/panel/create")
-def create_panel(identifier: str, description: str, users: list[str] = []) -> JSONResponse:
-    try:
-        db = DatabaseSqlite()
-        cursor = db.get_cursor()
-
-        cursor.execute("SELECT id FROM panels WHERE name =?", (identifier,))
-        if cursor.fetchone():
-            return JSONResponse(
-                {"success": 0, "message": "Panel bereits vorhanden!"},
-                status_code=status.HTTP_400_BAD_REQUEST
-            )
-
-        cursor.execute("INSERT INTO panels ({identifier}, description) VALUES (?, ?)", (identifier, description))
-        panel_identifier = cursor.lastrowid
-
-        for user in users:
-            cursor.execute(
-                "INSERT INTO panel_users (panel_identifier, user_identifier) VALUES (?, (SELECT id FROM users WHERE email =?))",
-                (panel_identifier, user))
-
-        db.conn.commit()
-
-        return JSONResponse(
-            {"success": 1, "message": "Panel erfolgreich erstellt!", "panel": {
-                f"identifier": Panel[0],
-                "name": Panel[1],
-                "description": Panel[2]
-            }},
-            status_code=status.HTTP_201_CREATED
         )
     except Exception as e:
         return JSONResponse(

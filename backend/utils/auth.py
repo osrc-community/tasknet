@@ -73,9 +73,12 @@ def verify_token(auth_token: str, auth_user: int):
 def identifier_exists(identifier: str, table: str, column: str) -> bool:
     db = DatabaseSqlite()
     cursor = db.get_cursor()
-    sql = f"SELECT '{column}' FROM '{table}' WHERE '{column}' LIKE '{identifier}'"
+    sql = f"SELECT {column} FROM '{table}' WHERE {column} LIKE '{identifier}'"
     cursor.execute(sql)
     result = cursor.fetchone()
+
+    print(sql)
+    print(result)
 
     if result is None:
         return False
