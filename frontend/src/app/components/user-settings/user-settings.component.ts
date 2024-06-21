@@ -267,4 +267,8 @@ export class UserSettingsComponent implements OnInit {
   adduser(){
 
   }//Todo Funktion mit dem Backend kombinieren
+
+  removeuser(){
+
+  }//todo Funktion mit dem Backend kombinieren
 }

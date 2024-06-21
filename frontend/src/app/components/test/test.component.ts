@@ -1,3 +1,4 @@
+
 import {Component, inject, TemplateRef, ViewChild, ViewContainerRef} from '@angular/core';
 import {NgIf} from "@angular/common";
 import {ModalComponent} from "@app/components/modal/modal.component";
