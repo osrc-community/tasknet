@@ -1,4 +1,15 @@
+<!---
 <button class="text-white" (click)="toastService.notify({type: 'success', text: 'Success!', bor: 3000})">Success BTN</button><br>
 <button class="text-white" (click)="toastService.notify({type: 'info', text: 'Info!', bor: 3000})">Info BTN</button><br>
 <button class="text-white" (click)="toastService.notify({type: 'danger', text: 'Danger!', bor: 3000})">Danger BTN</button><br>
 <button class="text-white" (click)="toastService.notify({type: 'warning', text: 'Warning!', bor: 3000})">Warning BTN</button><br>
+-->
+
+<button class="text-white" (click)="createModal(modal)">Modal-Test</button>
+
+<ng-template #modal let-data="message">
+  <div class="p-4">
+    <h2 class="text-xl font-bold">Template Modal</h2>
+    <p>{{ data }}</p>
+  </div>
+</ng-template>
