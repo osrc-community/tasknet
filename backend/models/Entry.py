@@ -7,7 +7,7 @@ class Entry(BaseModel):
     identifier: str
 
 
-class CreateEntry(Entry):
+class CreateEntry(BaseModel):
     type: str
     message: str
 

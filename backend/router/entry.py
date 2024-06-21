@@ -18,8 +18,8 @@ router = APIRouter(
 )
 
 
-@router.post("/entry/create")
-def create_entry(entry: CreateEntry) -> JSONResponse:
+@router.post("/entry/create/{list_identifier}")
+def create_entry(entry: CreateEntry, list_identifier: str) -> JSONResponse:
     try:
         db = DatabaseSqlite()
         cursor = db.get_cursor()
@@ -32,8 +32,13 @@ def create_entry(entry: CreateEntry) -> JSONResponse:
 
             db.conn.commit()
             if cursor.rowcount > 0:
-                new_entry = {"identifier": identifier, "type": entry.type, "message": entry.message}
-                return JSONResponse({"success": 1, "message": "Erstellt", "new_entry": new_entry})
+                sql_list = """INSERT INTO list_entries (list_identifier, entry_identifier) VALUES (?, ?)"""
+                cursor.execute(sql_list, (list_identifier, identifier))
+
+                db.conn.commit()
+                if cursor.rowcount > 0:
+                    new_entry = {"identifier": identifier, "type": entry.type, "message": entry.message}
+                    return JSONResponse({"success": 1, "message": "Erstellt", "new_entry": new_entry})
 
         cursor.close()
         return JSONResponse({"success": 0, "message": "Fehler!"}, status_code=status.HTTP_201_CREATED)

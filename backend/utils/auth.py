@@ -77,9 +77,6 @@ def identifier_exists(identifier: str, table: str, column: str) -> bool:
     cursor.execute(sql)
     result = cursor.fetchone()
 
-    print(sql)
-    print(result)
-
     if result is None:
         return False
     else:

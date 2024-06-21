@@ -43,7 +43,6 @@ def get_groups_panels():
             p_identifier, p_title, p_image = panel
             if p_image is None:
                 p_image = "assets/images/example.png"
-            print(ReturnPanel(identifier=p_identifier, title=p_title, image=p_image))
             panels_parsed.append(ReturnPanel(identifier=p_identifier, title=p_title, image=p_image).__dict__)
 
         return_list.append({"identifier": identifier, "title": title, "panels": panels_parsed})

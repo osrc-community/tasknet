@@ -16,6 +16,7 @@ import {ToastService} from "@utils/services/toast.service";
 import {FormsModule} from "@angular/forms";
 import {Panel} from "@utils/interfaces/panel";
 import {ModalService} from "@utils/services/modal.service";
+import {parseJson} from "@angular/cli/src/utilities/json-file";
 
 @Component({
   selector: 'component-panel',
@@ -42,14 +43,15 @@ export class PanelComponent implements OnInit {
   panel: Panel = {image: "", title: "Lädt..."};
 
   lists: PanelList[] = []
-  showNameModal: boolean = false;
-  modal_output_name: string = "";
-  modal_function = ""
   item_index: number = -1
   list_index: number = -1
 
   ngOnInit() {
     this.panel.identifier = this.activatedRoute.snapshot.params['identifier'];
+    this.sync()
+  }
+
+  sync() {
     if (this.panel.identifier != null) {
       this.dataService.requestLists(this.panel.identifier).subscribe({
         next: data => {
@@ -62,18 +64,6 @@ export class PanelComponent implements OnInit {
         }
       });
     }
-  }
-
-  syncPanel() {
-    let panel: Panel = this.panel
-    panel.lists = this.lists
-    this.dataService.panel_update(panel).subscribe({
-      next: data => {
-        if (data.success == 0) {
-          this.toastService.notify({type: 'danger', text: 'Updaten des Panels fehlgeschlagen!', bor: 3000})
-        }
-      }
-    });
   }
 
   drop(event: CdkDragDrop<PanelListItem[]>) {
@@ -92,8 +82,19 @@ export class PanelComponent implements OnInit {
   }
   listNamingConfirm(event: any) {
     let name: string = event.srcElement[0].value
-    if (name != '') {
-      this.lists.push({title: name, entries: []})
+    if (name != '' && this.panel.identifier) {
+      let new_list: PanelList = {title: name, entries: []}
+      this.lists.push(new_list)
+      this.dataService.list_create(new_list, this.panel.identifier).subscribe({
+        next: data => {
+          if (data.success == 0) {
+            this.toastService.notify({type: 'danger', text: 'Erstellen der Liste Fehlgeschlagen!', bor: 3000})
+          } else {
+            this.toastService.notify({type: 'info', text: 'Liste erstellt!', bor: 3000})
+            this.sync()
+          }
+        }
+      });
     } else {
       this.toastService.notify({type: "info", text: "Du musst einen Namen angeben!", bor: 3000})
     }
@@ -107,13 +108,58 @@ export class PanelComponent implements OnInit {
   elementNamingConfirm(event: any) {
     let name: string = event.srcElement[0].value
     if (name != '') {
-      this.lists[this.list_index].entries[this.item_index] = {type: "-", message: name}
+      let element = this.lists[this.list_index].entries[this.item_index]
+      let update_entry = {type: "-", message: name, identifier: element.identifier}
+      this.lists[this.list_index].entries[this.item_index] = update_entry
+
+      this.dataService.entry_update(update_entry).subscribe({
+        next: data => {
+          if (data.success == 0) {
+            this.toastService.notify({type: 'danger', text: 'Updaten des Eintrags Fehlgeschlagen!', bor: 3000})
+          } else {
+            this.toastService.notify({type: 'info', text: 'Eintrag geupdatet!', bor: 3000})
+            this.sync()
+          }
+        }
+      });
     } else {
       this.toastService.notify({type: "info", text: "Du musst einen Namen angeben!", bor: 3000})
     }
   }
 
   addElementToList(list_index: number) {
-    this.lists[list_index].entries.push({type: "-", message: "Neuer Eintrag"})
+    let new_element: PanelListItem = {type: "-", message: "Neuer Eintrag"}
+    this.lists[list_index].entries.push(new_element)
+    let list_identifier = this.lists[list_index].identifier
+
+    if (list_identifier) {
+      this.dataService.entry_create(new_element, list_identifier).subscribe({
+        next: data => {
+          if (data.success == 0) {
+            this.toastService.notify({type: 'danger', text: 'Erstellen des Eintrags Fehlgeschlagen!', bor: 3000})
+          } else {
+            this.toastService.notify({type: 'info', text: 'Eintrag erstellt!', bor: 3000})
+            this.sync()
+          }
+        }
+      });
+    }
+  }
+
+  deleteElement(element: PanelListItem, item_index: number, list_index: number) {
+    if (element.identifier) {
+      this.dataService.entry_delete(element.identifier).subscribe({
+        next: data => {
+          if (data.success == 0) {
+            this.toastService.notify({type: 'danger', text: 'Fehler während des Löschens!', bor: 3000})
+          } else {
+            this.toastService.notify({type: 'info', text: 'Eintrag gelöscht!', bor: 3000})
+            this.sync()
+          }
+        }
+      });
+    } else {
+      this.lists[list_index].entries.splice(item_index, 1)
+    }
   }
 }

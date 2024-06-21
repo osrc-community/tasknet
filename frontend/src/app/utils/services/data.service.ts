@@ -66,6 +66,14 @@ export class DataService implements OnInit {
     );
   }
 
+  panel_extended_update(panel: Panel): Observable<any> {
+    return this.http.patch(
+      this.backend + '/func/panel/extended_patch',
+      panel,
+      {}
+    );
+  }
+
   panel_delete(panel_identifier: string): Observable<any> {
     return this.http.delete(
       this.backend + '/func/panel/delete/' + panel_identifier
@@ -94,7 +102,7 @@ export class DataService implements OnInit {
 
   entry_create(entry: PanelListItem, list_identifier: string): Observable<any> {
     return this.http.post(
-      this.backend + '/func/entry/create',
+      this.backend + '/func/entry/create/' + list_identifier,
       entry
     );
   }

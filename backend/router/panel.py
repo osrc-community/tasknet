@@ -3,8 +3,11 @@ from fastapi.responses import JSONResponse
 from starlette import status
 
 from database import DatabaseSqlite
-from models.Group import CreateGroup
-from models.Panel import CreatePanel, UpdatePanel
+from models.Entry import UpdateEntry, CreateEntry
+from models.List import UpdateList, CreateList
+from models.Panel import CreatePanel, UpdatePanel, ExtendedPatch
+from router.entry import patch_entry, create_entry
+from router.list import patch_list, create_list
 from utils.auth import verify_token, gen_identifier, identifier_exists
 
 router = APIRouter(
@@ -46,8 +49,8 @@ def get_panel_lists(identifier: str) -> JSONResponse:
                     sql_entry = """SELECT * FROM entries WHERE identifier = ?"""
                     entry = cursor.execute(sql_entry, (entry_identifier,)).fetchone()
                     entry_identifier, entry_type, entry_message = entry
-                    entries_parsed.append({"type": entry_type, "message": entry_message})
-            lists_parsed.append({"title": list_title, "entries": entries_parsed})
+                    entries_parsed.append({"identifier": entry_identifier, "type": entry_type, "message": entry_message})
+            lists_parsed.append({"identifier": list_identifier, "title": list_title, "entries": entries_parsed})
 
         return_object = {
             "identifier": identifier,
@@ -143,3 +146,23 @@ def delete_panel(identifier: str) -> JSONResponse:
             {"success": 0, "message": str(e)},
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR
         )
+
+
+@router.patch("/panel/extended_patch")
+def extended_patch(body: ExtendedPatch) -> JSONResponse:
+    print(body)
+    #for list in body.lists:
+    #    exists = identifier_exists(list.identifier, 'lists', 'identifier')
+    #    if exists:
+    #        patch_list(UpdateList(identifier=list.identifier, title=list.title))
+    #    else:
+    #        create_list(CreateList(identifier=list.identifier, title=list.title))
+
+    #    for entry in list.entries:
+    #        exists = identifier_exists(entry.identifier, 'entries', 'identifier')
+    #        if exists:
+    #            patch_entry(UpdateEntry(identifier=entry.identifier, type=entry.type, message=entry.message))
+    #        else:
+    #            create_entry(CreateEntry(identifier=entry.identifier, type=entry.type, message=entry.message))
+
+    return JSONResponse({"success": 1, "message": "."}, status_code=status.HTTP_200_OK)

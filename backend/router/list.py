@@ -17,8 +17,12 @@ router = APIRouter(
 )
 
 
-@router.post("/list/create")
-def create_list(list: CreateList) -> JSONResponse:
+@router.post("/list/create/{panel_identifier}")
+def create_list(list: CreateList, panel_identifier: str) -> JSONResponse:
+    """
+    Body: CreateList
+    Identifier: The identifier of the panel
+    """
     try:
         db = DatabaseSqlite()
         cursor = db.get_cursor()
@@ -26,13 +30,18 @@ def create_list(list: CreateList) -> JSONResponse:
         already_exists = identifier_exists(identifier, 'lists', 'identifier')
 
         if not already_exists:
-            sql = """INSERT INTO lists (identifier, title) VALUES (?, ?)"""
-            cursor.execute(sql, (identifier, list.title,))
+            sql_list = """INSERT INTO lists (identifier, title) VALUES (?, ?)"""
+            cursor.execute(sql_list, (identifier, list.title,))
 
             db.conn.commit()
             if cursor.rowcount > 0:
-                new_list = {"identifier": identifier, "title": list.title}
-                return JSONResponse({"success": 1, "message": "Erstellt", "list": new_list})
+                sql_list = """INSERT INTO panel_list (panel_identifier, list_identifier) VALUES (?, ?)"""
+                cursor.execute(sql_list, (panel_identifier, identifier,))
+
+                db.conn.commit()
+                if cursor.rowcount > 0:
+                    new_list = {"identifier": identifier, "title": list.title}
+                    return JSONResponse({"success": 1, "message": "Erstellt", "list": new_list})
 
         cursor.close()
         return JSONResponse({"success": 0, "message": "Fehler!"}, status_code=status.HTTP_201_CREATED)
