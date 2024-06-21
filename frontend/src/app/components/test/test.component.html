@@ -8,8 +8,5 @@
 <button class="text-white" (click)="createModal(modal)">Modal-Test</button>
 
 <ng-template #modal let-data="message">
-  <div class="p-4">
-    <h2 class="text-xl font-bold">Template Modal</h2>
-    <p>{{ data }}</p>
-  </div>
+  <div class="text-xl">{{ data }}</div>
 </ng-template>

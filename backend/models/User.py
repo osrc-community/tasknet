@@ -39,3 +39,7 @@ class AuthUser(User):
     firstname: str
     lastname: str
     token: Optional[str] = None
+
+
+class LoginUser(User):
+    password: str

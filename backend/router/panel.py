@@ -3,7 +3,7 @@ from fastapi.responses import JSONResponse
 from starlette import status
 
 from database import DatabaseSqlite
-from models.CreateGroup import CreateGroup
+from models.Group import CreateGroup
 from models.Panel import Panel
 from utils.auth import verify_token, gen_identifier, identifier_exists
 

@@ -17,9 +17,6 @@ import {ModalService} from "@utils/services/modal.service";
 export class TestComponent {
   modalService = inject(ModalService)
 
-  @ViewChild('modal', { read: ViewContainerRef }) entry!: ViewContainerRef;
-  sub!: Subscription;
-
   createModal(template: TemplateRef<any>) {
     this.modalService.open(template, 'Template Modal Title', 'max-w-md', this.onConfirm, {"message":"test-message"});
   }

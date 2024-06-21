@@ -1,11 +1,8 @@
-from fastapi import APIRouter, status, Depends
+from fastapi import APIRouter, status
 from fastapi.responses import JSONResponse, Response
 
 from database import DatabaseSqlite
-from models.AuthUser import AuthUser
-from models.DeleteUser import DeleteUser
-from models.UpdateUser import UpdateUser
-from models.CreateUser import CreateUser
+from models.User import AuthUser, DeleteUser, UpdateUser, CreateUser
 from utils.account import user_exists
 from utils.auth import hash_password, gen_token
 

@@ -1,9 +1,8 @@
-from fastapi import APIRouter, status, Depends
+from fastapi import APIRouter, status
 from fastapi.responses import JSONResponse, Response
 
 from database import DatabaseSqlite
-from models.AuthUser import AuthUser
-from models.LoginUser import LoginUser
+from models.User import AuthUser, LoginUser
 from utils.auth import hash_password, gen_token
 
 router = APIRouter(
