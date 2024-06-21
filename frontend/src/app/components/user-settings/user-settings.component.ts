@@ -255,4 +255,16 @@ export class UserSettingsComponent implements OnInit {
       });
     }
   }
+
+  renamegroup(){
+
+  }//Todo Funktion mit dem Backend kombinieren
+
+  deletegroup() {
+
+  }//Todo Funktion mit dem Backend kombinieren
+
+  adduser(){
+
+  }//Todo Funktion mit dem Backend kombinieren
 }
