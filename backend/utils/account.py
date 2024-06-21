@@ -1,5 +1,5 @@
 from database import DatabaseSqlite
-from models.AuthUser import AuthUser
+from models.User import AuthUser
 
 
 def user_exists(email) -> bool:
