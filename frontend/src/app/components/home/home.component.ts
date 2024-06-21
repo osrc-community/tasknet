@@ -59,6 +59,7 @@ export class HomeComponent implements OnInit {
           this.toastService.notify({type: 'danger', text: 'Abfragen der Gruppen-Panels fehlgeschlagen!', bor: 3000})
         } else {
           this.groups = data.groups
+          console.log(data.groups)
         }
       }
     });

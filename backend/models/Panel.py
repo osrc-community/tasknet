@@ -14,3 +14,8 @@ class CreatePanel(BaseModel):
 class UpdatePanel(BaseModel):
     title: Optional[str] = None
     image: Optional[str] = None
+
+
+class ReturnPanel(Panel):
+    title: str
+    image: str

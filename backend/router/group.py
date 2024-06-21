@@ -4,7 +4,7 @@ from starlette import status
 
 from database import DatabaseSqlite
 from models.Group import CreateGroup, UpdateGroup
-from models.Panel import Panel
+from models.Panel import Panel, ReturnPanel
 from utils.auth import verify_token, gen_identifier, identifier_exists
 
 router = APIRouter(
@@ -43,7 +43,8 @@ def get_groups_panels():
             p_identifier, p_title, p_image = panel
             if p_image is None:
                 p_image = "assets/images/example.png"
-            panels_parsed.append(Panel(identifier=p_identifier, title=p_title, image=p_image).__dict__)
+            print(ReturnPanel(identifier=p_identifier, title=p_title, image=p_image))
+            panels_parsed.append(ReturnPanel(identifier=p_identifier, title=p_title, image=p_image).__dict__)
 
         return_list.append({"identifier": identifier, "title": title, "panels": panels_parsed})
 
