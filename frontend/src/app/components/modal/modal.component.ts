@@ -12,6 +12,7 @@ import {
 } from '@angular/core';
 import { ModalService } from '@utils/services/modal.service';
 import { NgClass, NgIf, NgTemplateOutlet } from '@angular/common';
+import {FormsModule} from "@angular/forms";
 
 @Component({
   selector: 'component-modal',
@@ -19,7 +20,8 @@ import { NgClass, NgIf, NgTemplateOutlet } from '@angular/common';
   imports: [
     NgClass,
     NgTemplateOutlet,
-    NgIf
+    NgIf,
+    FormsModule
   ],
   templateUrl: './modal.component.html',
   styleUrls: ['./modal.component.scss']
@@ -49,9 +51,9 @@ export class ModalComponent implements AfterViewInit {
     this.modalService.close();
   }
 
-  confirm() {
+  confirm(event: any) {
     if (this.callback) {
-      this.callback();
+      this.callback(event);
     }
     this.closeModal();
   }

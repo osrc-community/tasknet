@@ -1,18 +1,25 @@
-import { Injectable, ComponentRef, Injector, ApplicationRef, ComponentFactoryResolver, EmbeddedViewRef, TemplateRef } from '@angular/core';
+import {
+  Injectable,
+  ComponentRef,
+  Injector,
+  ApplicationRef,
+  ComponentFactoryResolver,
+  EmbeddedViewRef,
+  TemplateRef,
+  inject
+} from '@angular/core';
 import { ModalComponent } from '@app/components/modal/modal.component';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ModalService {
+  private injector: Injector = inject(Injector)
+  private applicationRef: ApplicationRef = inject(ApplicationRef)
+  private componentFactoryResolver: ComponentFactoryResolver = inject(ComponentFactoryResolver)
+
   private modalComponentRef: ComponentRef<ModalComponent> | null = null;
   private viewRef: EmbeddedViewRef<any> | null = null;
-
-  constructor(
-    private injector: Injector,
-    private applicationRef: ApplicationRef,
-    private componentFactoryResolver: ComponentFactoryResolver
-  ) {}
 
   open(templateOrComponent: TemplateRef<any> | any, title: string, size: string, callback: Function, data?: any) {
     this.close();
@@ -22,7 +29,7 @@ export class ModalService {
 
     this.modalComponentRef.instance.title = title;
     this.modalComponentRef.instance.size = size;
-    this.modalComponentRef.instance.callback = callback;
+    this.modalComponentRef.instance.callback = callback.bind(this);
 
     if (templateOrComponent instanceof TemplateRef) {
       this.modalComponentRef.instance.templateRef = templateOrComponent;
@@ -37,11 +44,11 @@ export class ModalService {
   }
 
   close() {
-    if (this.viewRef) {
+    /*if (this.viewRef) {
       this.applicationRef.detachView(this.viewRef);
       this.viewRef.destroy();
       this.viewRef = null;
-    }
+    }*/
 
     if (this.modalComponentRef) {
       this.applicationRef.detachView(this.modalComponentRef.hostView);

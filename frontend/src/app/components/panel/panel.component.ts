@@ -1,4 +1,4 @@
-import {Component, inject, OnInit} from '@angular/core';
+import {Component, inject, OnInit, TemplateRef} from '@angular/core';
 import {JsonPipe, NgForOf, NgIf, NgTemplateOutlet} from "@angular/common";
 import {ActivatedRoute} from "@angular/router";
 import {PanelList} from "@utils/interfaces/panel-list";
@@ -15,6 +15,7 @@ import {DataService} from "@utils/services/data.service";
 import {ToastService} from "@utils/services/toast.service";
 import {FormsModule} from "@angular/forms";
 import {Panel} from "@utils/interfaces/panel";
+import {ModalService} from "@utils/services/modal.service";
 
 @Component({
   selector: 'component-panel',
@@ -36,12 +37,13 @@ export class PanelComponent implements OnInit {
   activatedRoute = inject(ActivatedRoute)
   dataService = inject(DataService)
   toastService = inject(ToastService)
+  modalService = inject(ModalService)
 
   panel: Panel = {image: "", title: "Lädt..."};
 
   lists: PanelList[] = []
   showNameModal: boolean = false;
-  modal_output_name: string = "Unbenannt";
+  modal_output_name: string = "";
   modal_function = ""
   item_index: number = -1
   list_index: number = -1
@@ -84,32 +86,34 @@ export class PanelComponent implements OnInit {
                         event.currentIndex);
     }
   }
-  toggleNameModal() {
-    this.showNameModal = !this.showNameModal
+
+  openListNamingModal(template: TemplateRef<any>) {
+    this.modalService.open(template, 'Liste Benennen', 'max-w-md', this.listNamingConfirm.bind(this), {});
+  }
+  listNamingConfirm(event: any) {
+    let name: string = event.srcElement[0].value
+    if (name != '') {
+      this.lists.push({title: name, entries: []})
+    } else {
+      this.toastService.notify({type: "info", text: "Du musst einen Namen angeben!", bor: 3000})
+    }
+  }
+
+  openElementNamingModal(template: TemplateRef<any>, item_index: number, list_index: number) {
+    this.item_index = item_index
+    this.list_index = list_index
+    this.modalService.open(template, 'Liste Benennen', 'max-w-md', this.elementNamingConfirm.bind(this), {});
+  }
+  elementNamingConfirm(event: any) {
+    let name: string = event.srcElement[0].value
+    if (name != '') {
+      this.lists[this.list_index].entries[this.item_index] = {type: "-", message: name}
+    } else {
+      this.toastService.notify({type: "info", text: "Du musst einen Namen angeben!", bor: 3000})
+    }
   }
 
   addElementToList(list_index: number) {
     this.lists[list_index].entries.push({type: "-", message: "Neuer Eintrag"})
-  }
-
-  renameElement(item_index: number, list_index: number) {
-    this.item_index = item_index
-    this.list_index = list_index
-    this.modal_function = "rename_element"
-    this.toggleNameModal()
-  }
-
-  modalFunction() {
-    if (this.modal_function == 'create_list') {
-      this.lists.push({title: this.modal_output_name, entries: []})
-    } else if (this.modal_function == 'rename_element') {
-      this.lists[this.list_index].entries[this.item_index] = {type: "-", message: this.modal_output_name}
-    }
-    this.toggleNameModal()
-  }
-
-  addList() {
-    this.modal_function = "create_list"
-    this.toggleNameModal()
   }
 }
