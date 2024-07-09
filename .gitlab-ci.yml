@@ -14,8 +14,7 @@ build-staging:
   variables:
     IMAGE_TAG: staging
   before_script:
-    - mkdir ~/".docker"
-    - echo $DOCKER_AUTH_CONFIG > ~/".docker/config.json"
+    - echo $CI_REGISTRY_PASSWORD | docker login -u $CI_REGISTRY_USER --password-stdin $CI_REGISTRY
   script:
     - docker-compose -f docker-compose.build.yml build
     - docker-compose -f docker-compose.build.yml push
@@ -30,7 +29,6 @@ deploy-staging:
   variables:
     IMAGE_TAG: staging
   before_script:
-    - mkdir ~/".docker"
-    - echo $DOCKER_AUTH_CONFIG > ~/".docker/config.json"
+    - echo $CI_REGISTRY_PASSWORD | docker login -u $CI_REGISTRY_USER --password-stdin $CI_REGISTRY
   script:
     - docker-compose -p "osrcc-tasknet" -f dcd.staging.yml up -d
