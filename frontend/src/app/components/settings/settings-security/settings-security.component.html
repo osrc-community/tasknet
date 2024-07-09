@@ -1,0 +1,82 @@
+<div class="max-w-screen-xl flex flex-wrap items-center content-center justify-center mx-auto p-20">
+  <div class="mt-18 w-screen">
+    <div class="card bg-gray-700">
+      <component-settings-navigation></component-settings-navigation>
+      <div class="p-10">
+        <div class="grid grid-cols-2">
+          <form class="grid" [formGroup]="password_form" (ngSubmit)="updatePassword()">
+            <div class="w-fit justify-self-center">
+              <h1 class="text-2xl text-white mb-6">Passwort ändern</h1>
+              <div class="mb-4">
+                <label for="old_password" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Altes Passwort</label>
+                <input
+                  type="password"
+                  id="old_password"
+                  class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                  style="width: 300px;"
+                  formControlName="old_password"
+                  required
+                />
+                <ng-container *ngIf="password_form_submitted && password_f['old_password'].errors">
+                  <div class="text-red-500 text-xs italic mt-2">
+                    <div *ngIf="password_f['old_password'].errors?.['required']">Altes Passwort is required</div>
+                  </div>
+                </ng-container>
+              </div>
+              <div class="mb-4">
+                <label for="new_password" class="block  mb-2 text-sm font-medium text-gray-900 dark:text-white">Neues Passwort</label>
+                <input
+                  type="password"
+                  id="new_password"
+                  class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                  style="width: 300px;"
+                  formControlName="new_password"
+                  required
+                />
+                <ng-container *ngIf="password_form_submitted && password_f['new_password'].errors">
+                  <div class="text-red-500 text-xs italic mt-2">
+                    <div *ngIf="password_f['new_password'].errors?.['required']">Passwort is required</div>
+                  </div>
+                </ng-container>
+              </div>
+              <div class="mb-6">
+                <label for="val_password" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Passwort bestätigen</label>
+                <input
+                  type="password"
+                  id="val_password"
+                  class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                  style="width: 300px;"
+                  formControlName="val_password"
+                  required
+                />
+                <ng-container *ngIf="password_form_submitted && password_f['val_password'].errors">
+                  <div class="text-red-500 text-xs italic mt-2">
+                    <div *ngIf="password_f['val_password'].errors?.['required']">Passwort is required</div>
+                  </div>
+                </ng-container>
+              </div>
+              <div class="">
+                <input type="submit" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" value="Passwort Aktualisieren">
+              </div>
+            </div>
+          </form>
+          <div class="justify-self-center">
+            <h1 class="text-2xl text-white mb-6">Account Deaktivieren</h1>
+            <div class="text-gray-300 mb-6">
+              <div class="mb-2">
+                Hier können Sie Ihren Account Deaktivieren lassen.
+              </div>
+              <div>
+                Falls Sie Ihre Daten komplett löschen lassen wollen, kontaktieren Sie bitte Ihren Admin.
+              </div>
+            </div>
+            <div>
+              <button (click)="deleteAccount()" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Deaktivieren</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+

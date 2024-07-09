@@ -40,7 +40,7 @@
                 </svg>
                 <a href="{{router.url}}" class="ms-1 text-sm font-medium text-gray-700 hover:text-blue-600 md:ms-2 dark:text-gray-400 dark:hover:text-white">
                   <div *ngIf="router.url.split('/')[1] == 'panels'">Panel</div>
-                  <div *ngIf="router.url.split('/')[1] == 'user-settings'">Einstellungen</div>
+                  <div *ngIf="router.url.split('/')[1] == 'settings'">Einstellungen</div>
                 </a>
               </div>
             </li>
@@ -62,7 +62,7 @@
         </div>
         <ul class="py-2" aria-labelledby="user-menu-button">
           <li>
-            <a href="/user-settings/general" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">Einstellungen</a>
+            <a href="/settings/profile" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">Einstellungen</a>
           </li>
           <li>
             <a href="/logout" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">Abmelden</a>

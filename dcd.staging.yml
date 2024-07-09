@@ -1,21 +1,21 @@
 services:
   issue_board_frontend:
-    image: registry.osrc.community/osrc-community/issue-board:frontend-staging
-    container_name: staging_osrc_issue_board-frontend
+    image: registry.osrc.community/osrcc/tasknet:frontend-staging
+    container_name: staging_osrc_tasknet-frontend
     restart: unless-stopped
     networks:
       - internal
-      - osrc
+      - cloudflare
   issue_board_backend:
-    image: registry.osrc.community/osrc-community/issue-board:backend-staging
-    container_name: staging_osrc_issue_board-backend
+    image: registry.osrc.community/osrcc/tasknet:backend-staging
+    container_name: staging_osrc_tasknet-backend
     restart: unless-stopped
     networks:
       - internal
-      - osrc
+      - cloudflare
 
 networks:
   internal:
     external: false
-  osrc:
+  cloudflare:
     external: true

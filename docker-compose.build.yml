@@ -1,13 +1,13 @@
 version: '3.7'
 services:
   frontend:
-    image: registry.osrc.community/osrc-community/issue-board:frontend-${IMAGE_TAG}
+    image: registry.osrc.community/osrcc/tasknet:frontend-${IMAGE_TAG}
     build:
       context: ./frontend
       args:
         IMAGE_TAG: ${IMAGE_TAG}
   backend:
-    image: registry.osrc.community/osrc-community/issue-board:backend-${IMAGE_TAG}
+    image: registry.osrc.community/osrcc/tasknet:backend-${IMAGE_TAG}
     build:
       context: ./backend
       args:

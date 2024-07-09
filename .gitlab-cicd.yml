@@ -6,7 +6,7 @@ stages:
 
 build-staging:
   stage: build
-  image: registry.osrc.community/dind/build:1.0
+  image: registry.osrc.community/docker-images/dind:1.0
   only:
     - staging
   tags:
@@ -22,7 +22,7 @@ build-staging:
 
 deploy-staging:
   stage: deploy
-  image: registry.osrc.community/dind/build:1.0
+  image: registry.osrc.community/docker-images/dind:1.0
   only:
     - staging
   tags:
@@ -33,4 +33,4 @@ deploy-staging:
     - mkdir ~/".docker"
     - echo $DOCKER_AUTH_CONFIG > ~/".docker/config.json"
   script:
-    - docker-compose -p "osrcc-issue-board" -f dcd.staging.yml up -d
+    - docker-compose -p "osrcc-tasknet" -f dcd.staging.yml up -d
