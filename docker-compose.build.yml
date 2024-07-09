@@ -1,14 +1,20 @@
 version: '3.7'
 services:
-  frontend:
-    image: registry.osrc.community/osrcc/tasknet:frontend-${IMAGE_TAG}
+  combined:
+    image: registry.osrc.community/docker-images/s6-ms:1.0
     build:
-      context: ./frontend
+      context: ./
       args:
         IMAGE_TAG: ${IMAGE_TAG}
-  backend:
-    image: registry.osrc.community/osrcc/tasknet:backend-${IMAGE_TAG}
-    build:
-      context: ./backend
-      args:
-        IMAGE_TAG: ${IMAGE_TAG}
+  #frontend:
+  #  image: registry.osrc.community/osrcc/tasknet:frontend-${IMAGE_TAG}
+  #  build:
+  #    context: ./frontend
+  #    args:
+  #      IMAGE_TAG: ${IMAGE_TAG}
+  #backend:
+  #  image: registry.osrc.community/osrcc/tasknet:backend-${IMAGE_TAG}
+  #  build:
+  #    context: ./backend
+  #    args:
+  #      IMAGE_TAG: ${IMAGE_TAG}
